@@ -38,7 +38,7 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("username = ?", user.Username).First(&dbuser).Error
+	errSelect := r.DB.Where("username = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -47,7 +47,7 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 		return errSelect
 	}
 
-	token, errToken := middlewares.GenerarToken(*user.Username, dbuser.ID)
+	token, errToken := middlewares.GenerarToken(*user.Email, dbuser.ID)
 
 	if errToken != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -74,7 +74,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("username = ?", user.Username).First(&dbuser).Error
+	errSelect := r.DB.Where("username = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -89,7 +89,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 			&fiber.Map{"message": "Contraseña incorrecta"})
 	}
 
-	token, errToken := middlewares.GenerarToken(*dbuser.Username, dbuser.ID)
+	token, errToken := middlewares.GenerarToken(*dbuser.Email, dbuser.ID)
 
 	if errToken != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -100,8 +100,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 
 	return context.Status(http.StatusOK).JSON(
 		&fiber.Map{"message": "Ingreso exitoso",
-			"token": token,
-			"image": dbuser.ImageP})
+			"token": token})
 }
 
 func (r *Repository) SetupRoutes(app *fiber.App) {

@@ -5,10 +5,17 @@ import (
 )
 
 type User struct {
-	ID       uint    `gorm:"primaryKey;autoIncrement" json:"id"`
-	Username *string `json:"username"`
-	Password *string `json:"password"`
-	ImageP   *string `json:"image"`
+	ID        uint    `gorm:"primaryKey;autoIncrement" json:"id"`
+	Email     *string `json:"email"`
+	FirstName *string `json:"firstName"`
+	LastName  *string `json:"lastName"`
+	Password  *string `json:"password"`
+	City      *string `json:"city"`
+	Country   *string `json:"country"`
+	Type      *string `json:"type"`
+
+	Videos []Video `json:"-"`
+	Votes  []Vote  `json:"-"`
 }
 
 func MigrateUsers(db *gorm.DB) error {

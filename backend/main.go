@@ -36,8 +36,10 @@ func main() {
 	}
 
 	errMigrateUsers := models.MigrateUsers(db)
+	errMigrateVideos := models.MigrateVideos(db)
+	errMigrateVotes := models.MigrateVotes(db)
 
-	if errMigrateUsers != nil {
+	if errMigrateUsers != nil || errMigrateVideos != nil || errMigrateVotes != nil {
 		log.Fatal("Error migrando la base de datos")
 	}
 
