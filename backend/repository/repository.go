@@ -112,5 +112,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 
 	// Video routes
 	api.Post("/create_video", middlewares.AutValidation, r.CreateVideo)
+	api.Get("/public/videos", r.getAllVideos)
+	api.Post("/public/videos/:videoId/vote", middlewares.AutValidation, r.voteForVideo)
 
 }
