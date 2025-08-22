@@ -2,13 +2,11 @@ package repository
 
 import (
 	"back-end-todolist/models"
-	"errors"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"gorm.io/gorm"
 )
 
 /*---Video functions----*/
@@ -92,15 +90,11 @@ func (r *Repository) voteForVideo(context *fiber.Ctx) error {
 
 	// Verificar si ya existe el voto
 	var existingVote = models.Vote{}
-	err := r.DB.Where("user_id = ? AND video_id = ?", userId, vid).First(&existingVote).Error
+	err := r.DB.Where("user_id = ? AND video_id = ?", userId, vid).Take(&existingVote).Error
+
 	if err == nil {
 		// Ya existe
 		return fiber.NewError(fiber.StatusConflict, "Ya votaste por este video")
-	}
-
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
-		// Otro error de DB
-		return fiber.NewError(fiber.StatusInternalServerError, "Error al verificar voto")
 	}
 
 	// Si no existe, crear el voto
