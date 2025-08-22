@@ -38,7 +38,7 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("username = ?", user.Email).First(&dbuser).Error
+	errSelect := r.DB.Where("email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -74,7 +74,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("username = ?", user.Email).First(&dbuser).Error
+	errSelect := r.DB.Where("email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -109,5 +109,10 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	// User routes
 	api.Post("/create_users", r.CreateUser)
 	api.Post("/login_users", r.LoginUser)
+
+	// Video routes
+	api.Post("/create_video", middlewares.AutValidation, r.CreateVideo)
+	api.Get("/public/videos", r.getAllVideos)
+	api.Post("/public/videos/:videoId/vote", middlewares.AutValidation, r.voteForVideo)
 
 }
