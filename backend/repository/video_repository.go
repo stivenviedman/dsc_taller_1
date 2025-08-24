@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 /*---Video functions----*/
@@ -109,4 +110,119 @@ func (r *Repository) voteForVideo(context *fiber.Ctx) error {
 	return context.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"message": "Voto registrado con éxito",
 	})
+}
+
+/*---Get My Videos----*/
+func (r *Repository) getMyVideos(context *fiber.Ctx) error {
+	// Obtiene el userId a partir del token
+	userID := context.Locals("userID").(uint)
+
+	videos := &[]models.Video{}
+
+	if err := r.DB.
+		Where("user_id = ?", userID).
+		Order("uploaded_at DESC").
+		Find(&videos).Error; err != nil {
+
+		return context.Status(http.StatusInternalServerError).JSON(
+			&fiber.Map{"message": "Error al obtener los videos del usuario"},
+		)
+	}
+
+	// Formatear la respuesta según la especificación
+	var responseVideos []map[string]interface{}
+	for _, video := range *videos {
+		videoData := map[string]interface{}{
+			"video_id": video.ID,
+			"title":    video.Title,
+			"status":   video.Status,
+		}
+
+		if video.UploadedAt != nil {
+			videoData["uploaded_at"] = *video.UploadedAt
+		}
+
+		if video.Status != nil && *video.Status == "processed" {
+			if video.ProcessedAt != nil {
+				videoData["processed_at"] = *video.ProcessedAt
+			}
+			if video.ProcessedURL != nil {
+				videoData["processed_url"] = *video.ProcessedURL
+			}
+		}
+
+		responseVideos = append(responseVideos, videoData)
+	}
+
+	context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "Videos del usuario obtenidos correctamente",
+		"data":    responseVideos,
+	})
+
+	return nil
+}
+
+/*---Get Video Detail----*/
+func (r *Repository) getVideoDetail(context *fiber.Ctx) error {
+	// Obtiene el userId a partir del token
+	userID := context.Locals("userID").(uint)
+	videoID := context.Params("video_id")
+
+	// Convertir videoID de string a uint
+	var vid uint
+	if v, err := strconv.ParseUint(videoID, 10, 32); err == nil {
+		vid = uint(v)
+	} else {
+		return fiber.NewError(fiber.StatusBadRequest, "video_id inválido")
+	}
+
+	video := models.Video{}
+
+	// Buscar el video y verificar que pertenece al usuario autenticado
+	if err := r.DB.Where("id = ? AND user_id = ?", vid, userID).First(&video).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return context.Status(http.StatusNotFound).JSON(&fiber.Map{
+				"message": "Video no encontrado o no tienes permisos para acceder a él",
+			})
+		}
+		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "Error al obtener el video",
+		})
+	}
+
+	// Contar votos del video
+	var voteCount int64
+	r.DB.Model(&models.Vote{}).Where("video_id = ?", vid).Count(&voteCount)
+
+	// Formatear la respuesta según la especificación
+	response := map[string]interface{}{
+		"video_id": video.ID,
+		"title":    video.Title,
+		"status":   video.Status,
+		"votes":    voteCount,
+	}
+
+	if video.UploadedAt != nil {
+		response["uploaded_at"] = *video.UploadedAt
+	}
+
+	if video.OriginalURL != nil {
+		response["original_url"] = *video.OriginalURL
+	}
+
+	if video.Status != nil && *video.Status == "processed" {
+		if video.ProcessedAt != nil {
+			response["processed_at"] = *video.ProcessedAt
+		}
+		if video.ProcessedURL != nil {
+			response["processed_url"] = *video.ProcessedURL
+		}
+	}
+
+	context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message": "Detalle del video obtenido correctamente",
+		"data":    response,
+	})
+
+	return nil
 }
