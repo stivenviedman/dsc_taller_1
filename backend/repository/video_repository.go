@@ -226,3 +226,66 @@ func (r *Repository) getVideoDetail(context *fiber.Ctx) error {
 
 	return nil
 }
+
+/*---Delete Video----*/
+func (r *Repository) deleteVideo(context *fiber.Ctx) error {
+	// Obtiene el userId a partir del token
+	userID := context.Locals("userID").(uint)
+	videoID := context.Params("video_id")
+
+	// Convertir videoID de string a uint
+	var vid uint
+	if v, err := strconv.ParseUint(videoID, 10, 32); err == nil {
+		vid = uint(v)
+	} else {
+		return fiber.NewError(fiber.StatusBadRequest, "video_id inválido")
+	}
+
+	video := models.Video{}
+
+	// Buscar el video y verificar que pertenece al usuario autenticado
+	if err := r.DB.Where("id = ? AND user_id = ?", vid, userID).First(&video).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return context.Status(http.StatusNotFound).JSON(&fiber.Map{
+				"message": "Video no encontrado o no tienes permisos para eliminarlo",
+			})
+		}
+		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "Error al obtener el video",
+		})
+	}
+
+	// Verificar que el video no haya sido publicado para votación
+	// Un video está "publicado" si tiene votos o si su status es "processed"
+	var voteCount int64
+	r.DB.Model(&models.Vote{}).Where("video_id = ?", vid).Count(&voteCount)
+
+	if voteCount > 0 {
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "No se puede eliminar el video porque ya tiene votos",
+		})
+	}
+
+	if video.Status != nil && *video.Status == "processed" {
+		return context.Status(http.StatusBadRequest).JSON(&fiber.Map{
+			"message": "No se puede eliminar el video porque ya ha sido procesado",
+		})
+	}
+
+	// Eliminar el video de la base de datos
+	if err := r.DB.Delete(&video).Error; err != nil {
+		return context.Status(http.StatusInternalServerError).JSON(&fiber.Map{
+			"message": "Error al eliminar el video",
+		})
+	}
+
+	// TODO: Aquí se debería eliminar también los archivos físicos del sistema de archivos
+	// cuando implementemos el almacenamiento real
+
+	context.Status(http.StatusOK).JSON(&fiber.Map{
+		"message":  "El video ha sido eliminado exitosamente",
+		"video_id": vid,
+	})
+
+	return nil
+}
