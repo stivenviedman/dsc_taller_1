@@ -73,7 +73,7 @@ func (r *Repository) getAllVideos(context *fiber.Ctx) error {
 
 	if err := r.DB.
 		Preload("User").
-		Where("status IN ?", []string{"uploaded", "processed"}).
+		Where("status = 'processed'").
 		Find(&videos).Error; err != nil {
 
 		return context.Status(http.StatusInternalServerError).JSON(
