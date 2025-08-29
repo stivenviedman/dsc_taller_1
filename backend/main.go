@@ -89,7 +89,10 @@ func main() {
 
 	r := repository.Repository{DB: db}
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		BodyLimit:         100 * 1024 * 1024,
+		StreamRequestBody: true,
+	})
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000, http://127.0.0.1:3000",
@@ -98,6 +101,9 @@ func main() {
 		ExposeHeaders:    "Content-Type",
 		AllowCredentials: false,
 	}))
+
+	app.Static("/uploads", "./uploads")
+	app.Static("/processed", "./processed")
 
 	r.SetupRoutes(app)
 	app.Listen(":8080")
