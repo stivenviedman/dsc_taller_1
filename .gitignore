@@ -41,5 +41,5 @@
 /ui/next-env.d.ts
 
 # backend
-/uploads
-/processed
+/backend/uploads
+/backend/processed
