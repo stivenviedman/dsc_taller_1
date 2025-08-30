@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/hibiken/asynq"
@@ -36,11 +37,13 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	}
 
 	status := "uploaded"
+	now := time.Now()
 	video := models.Video{
 		UserID:      userID,
 		Title:       &title,
 		OriginalURL: &publicPath,
 		Status:      &status,
+		UploadedAt:  &now,
 	}
 	if err := r.DB.Create(&video).Error; err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
@@ -60,10 +63,18 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 		})
 	}
 
+	// Ensure CreatedAt is loaded before returning
+	var savedVideo models.Video
+	if err := r.DB.First(&savedVideo, video.ID).Error; err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error fetching saved video",
+		})
+	}
+
 	return ctx.JSON(fiber.Map{
 		"message": "Stored video. Processing scheduled.",
 		"task_id": info.ID,
-		"video":   video,
+		"video":   savedVideo,
 	})
 }
 
