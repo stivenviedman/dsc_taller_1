@@ -28,17 +28,41 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 		return err
 	}
 
+	dbuserNames := []models.User{}
+	query := r.DB.Where("Email = ?", user.Email).Find(&dbuserNames)
+
+	if query.Error != nil {
+		return context.Status(http.StatusBadRequest).JSON(
+			&fiber.Map{"message": "No se puede validar usuario existente"})
+	}
+
+	if query.RowsAffected != 0 {
+		return context.Status(http.StatusConflict).JSON(
+			&fiber.Map{"message": "Ya existen perfiles con ese email"})
+	}
+
+	hashPasw, errPasw := middlewares.HashPassword(*user.Password)
+
+	if errPasw != nil {
+		context.Status(http.StatusInternalServerError).JSON(
+			&fiber.Map{"message": "No se procesar la contraseña"})
+		return errPasw
+	}
+
+	hashedP := string(hashPasw)
+	user.Password = &hashedP
+
 	errCreate := r.DB.Create(&user).Error
 
 	if errCreate != nil {
-		context.Status(http.StatusBadRequest).JSON(
+		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo crear el user"})
 
 		return err
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("email = ?", user.Email).First(&dbuser).Error
+	errSelect := r.DB.Where("Email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
 		context.Status(http.StatusBadRequest).JSON(
@@ -50,13 +74,13 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 	token, errToken := middlewares.GenerarToken(*user.Email, dbuser.ID)
 
 	if errToken != nil {
-		context.Status(http.StatusBadRequest).JSON(
+		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo generar el token"})
 		return errToken
 	}
 
 	return context.Status(http.StatusOK).JSON(
-		&fiber.Map{"message": "Se creo el user correctamente",
+		&fiber.Map{"message": "Se creo el usuario correctamente",
 			"token": token})
 }
 
@@ -74,17 +98,19 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	}
 
 	dbuser := models.User{}
-	errSelect := r.DB.Where("email = ?", user.Email).First(&dbuser).Error
+	errSelect := r.DB.Where("Email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
-		context.Status(http.StatusBadRequest).JSON(
+		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo encontrar el usuario"})
 
 		return errSelect
 	}
+
 	fmt.Printf("Usuario: %s\n", *user.Password)
 	fmt.Printf("Usuario DB %s\n", *dbuser.Password)
-	if *dbuser.Password != *user.Password {
+
+	if !(middlewares.CheckPasswordHash(*user.Password, *dbuser.Password)) {
 		return context.Status(http.StatusForbidden).JSON(
 			&fiber.Map{"message": "Contraseña incorrecta"})
 	}
@@ -92,7 +118,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	token, errToken := middlewares.GenerarToken(*dbuser.Email, dbuser.ID)
 
 	if errToken != nil {
-		context.Status(http.StatusBadRequest).JSON(
+		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo generar el token"})
 
 		return errToken
