@@ -9,11 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// Can be replaced in tests
+var newConnection = storage.NewConnection
+
 func InitDB() *gorm.DB {
 	// Load environment variables
-	err := godotenv.Load(".env")
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error cargando el archivo .env")
+		log.Println("Warning: Error cargando el archivo .env")
 	}
 
 	// Database config
@@ -26,8 +29,8 @@ func InitDB() *gorm.DB {
 		DBName:   os.Getenv("DB_NAME"),
 	}
 
-	// Connect to DB
-	db, err := storage.NewConnection(config)
+	// Connect to DB (via variable, not direct call)
+	db, err := newConnection(config)
 	if err != nil {
 		log.Fatal("Error cargando la base de datos")
 	}
