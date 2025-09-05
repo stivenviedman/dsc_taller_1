@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -9,9 +11,10 @@ type Video struct {
 	ProcessedURL *string `json:"processedUrl"`
 	OriginalURL  *string `json:"originalUrl"`
 	Title        *string `json:"title"`
-	UploadedAt   *string `json:"uploadedAt"`
-	ProcessedAt  *string `json:"processedAt"`
 	Status       *string `json:"status"`
+
+	UploadedAt  *time.Time `json:"createdAt"`
+	ProcessedAt *time.Time `json:"processedAt"`
 
 	//Relacion con User
 	UserID uint `json:"user_id"`

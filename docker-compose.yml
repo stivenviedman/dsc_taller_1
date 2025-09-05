@@ -30,6 +30,26 @@ services:
       DB_NAME: anb-dev
     ports:
       - "8080:8080"
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/processed:/app/processed
+
+  worker:
+    build: ./backend
+    container_name: my_go_worker
+    command: ["./backend-worker"]
+    depends_on:
+      - redis
+      - postgres
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: admin
+      DB_NAME: anb-dev
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/processed:/app/processed
 
   frontend:
     build: ./ui
@@ -44,6 +64,12 @@ services:
       - /app/node_modules
     depends_on:
       - backend
+
+  redis:
+    image: redis:7
+    container_name: my_redis
+    ports:
+      - "6379:6379"
 
 volumes:
   postgres_data:

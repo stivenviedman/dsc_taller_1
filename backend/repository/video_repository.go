@@ -1,57 +1,90 @@
 package repository
 
 import (
+	"back-end-todolist/asynqtasks"
 	"back-end-todolist/models"
-	"log"
+	"fmt"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
 
 /*---Video functions----*/
-func (r *Repository) CreateVideo(context *fiber.Ctx) error {
+func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
+	userID := ctx.Locals("userID").(uint)
 
-	/*Obtiene el userId a partir del token*/
-	userID := context.Locals("userID").(uint)
-	log.Printf("El usuario con id %d va a crear un video'", userID)
-
-	video := models.Video{}
-
-	err := context.BodyParser(&video)
-
+	// Get form-data video
+	title := ctx.FormValue("title")
+	file, err := ctx.FormFile("video_file")
 	if err != nil {
-		context.Status(http.StatusUnprocessableEntity).JSON(
-			&fiber.Map{"message": "request failed"})
-
-		return err
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "Missing video file",
+		})
 	}
 
-	//Asigna el id
-	video.UserID = userID
+	// Sanitize filename (remove spaces and keep extension)
+	ext := filepath.Ext(file.Filename)
+	name := strings.TrimSuffix(file.Filename, ext)
+	safeName := strings.ReplaceAll(name, " ", "_")
+	finalFilename := safeName + ext
 
-	// Validar que el User existe
-	user := models.User{}
-	if err := r.DB.First(&user, userID).Error; err != nil {
-		return context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{"message": "Usuario no encontrado"},
-		)
+	// Final file path
+	publicPath := fmt.Sprintf("/uploads/%d_%s", userID, finalFilename)
+	savePath := "." + publicPath
+
+	// Store in ./uploads
+	if err := ctx.SaveFile(file, savePath); err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error saving video",
+		})
 	}
 
-	errCreate := r.DB.Create(&video).Error
-
-	if errCreate != nil {
-		context.Status(http.StatusBadRequest).JSON(
-			&fiber.Map{"message": "No se pudo crear el video"})
-
-		return err
+	status := "uploaded"
+	now := time.Now()
+	video := models.Video{
+		UserID:      userID,
+		Title:       &title,
+		OriginalURL: &publicPath,
+		Status:      &status,
+		UploadedAt:  &now,
+	}
+	if err := r.DB.Create(&video).Error; err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error storing in DB",
+		})
 	}
 
-	context.Status(http.StatusOK).JSON(
-		&fiber.Map{"message": "Se creo el video correctamente"})
+	// Enqueue task
+	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
+	client := asynq.NewClient(asynq.RedisClientOpt{Addr: "redis:6379"})
+	defer client.Close()
 
-	return nil
+	info, err := client.Enqueue(task)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error queueing task",
+		})
+	}
+
+	// Ensure CreatedAt is loaded before returning
+	var savedVideo models.Video
+	if err := r.DB.First(&savedVideo, video.ID).Error; err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error fetching saved video",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "Stored video. Processing scheduled.",
+		"task_id": info.ID,
+		"video":   savedVideo,
+	})
 }
 
 func (r *Repository) getAllVideos(context *fiber.Ctx) error {
