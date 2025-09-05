@@ -1,39 +1,18 @@
 package main
 
 import (
+	"back-end-todolist/bootstrap"
 	"back-end-todolist/models"
 	"back-end-todolist/repository"
-	"back-end-todolist/storage"
 	"log"
-	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-
-	err := godotenv.Load(".env")
-
-	if err != nil {
-		log.Fatal("Error cargando el archivo .env")
-	}
-
-	config := &storage.Config{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		Password: os.Getenv("DB_PASSWORD"),
-		User:     os.Getenv("DB_USER"),
-		SSLMode:  os.Getenv("DB_SSLMODE"),
-		DBName:   os.Getenv("DB_NAME"),
-	}
-	db, err := storage.NewConnection(config)
-
-	if err != nil {
-		log.Fatal("Error cargando la base de datos")
-	}
+	db := bootstrap.InitDB()
 
 	errMigrateUsers := models.MigrateUsers(db)
 	errMigrateVideos := models.MigrateVideos(db)
