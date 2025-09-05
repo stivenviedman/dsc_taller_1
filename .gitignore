@@ -43,3 +43,4 @@
 # backend
 /backend/uploads
 /backend/processed
+coverage.out
