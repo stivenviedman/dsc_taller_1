@@ -5,7 +5,9 @@ import (
 	"back-end-todolist/models"
 	"fmt"
 	"net/http"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,8 +27,14 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// Original file path
-	publicPath := fmt.Sprintf("/uploads/%d_%s", userID, file.Filename)
+	// Sanitize filename (remove spaces and keep extension)
+	ext := filepath.Ext(file.Filename)
+	name := strings.TrimSuffix(file.Filename, ext)
+	safeName := strings.ReplaceAll(name, " ", "_")
+	finalFilename := safeName + ext
+
+	// Final file path
+	publicPath := fmt.Sprintf("/uploads/%d_%s", userID, finalFilename)
 	savePath := "." + publicPath
 
 	// Store in ./uploads
@@ -51,7 +59,7 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// Encolar tarea
+	// Enqueue task
 	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
 	client := asynq.NewClient(asynq.RedisClientOpt{Addr: "redis:6379"})
 	defer client.Close()
