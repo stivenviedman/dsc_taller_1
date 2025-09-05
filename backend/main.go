@@ -61,7 +61,7 @@ func main() {
 			if err := db.Exec("REFRESH MATERIALIZED VIEW ranking_view;").Error; err != nil {
 				log.Println("Error refrescando ranking_view:", err)
 			} else {
-				log.Println("ranking_view refrescada con éxito")
+				log.Println("ranking_view refrescada con éxito ✅")
 			}
 		}
 	}()
