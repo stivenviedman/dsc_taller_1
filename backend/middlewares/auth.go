@@ -56,7 +56,7 @@ func GenerarToken(username string, id uint) (string, error) {
 	datos := jwt.MapClaims{
 		"username": username,
 		"userId":   id,
-		"exp":      time.Now().Add(time.Minute * 15).Unix(),
+		"exp":      time.Now().Add(time.Minute * 60).Unix(),
 		"iat":      time.Now().Unix(),
 	}
 
