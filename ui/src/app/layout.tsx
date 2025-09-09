@@ -1,6 +1,6 @@
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
-import Navbar from "@/components/Navbar";
+import Nav from "@/components/Nav";
 
 export const metadata = {
   title: "ANB Scout",
@@ -12,7 +12,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="es">
       <body className="min-h-screen bg-neutral-950 text-white">
         <AuthProvider>
-          <Navbar />
+          <Nav />
           <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
         </AuthProvider>
       </body>

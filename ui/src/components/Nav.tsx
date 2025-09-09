@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
-export default function Navbar() {
+export default function Nav() {
   const { isAuthed, email, logout } = useAuth();
 
   return (
