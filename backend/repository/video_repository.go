@@ -4,7 +4,9 @@ import (
 	"back-end-todolist/asynqtasks"
 	"back-end-todolist/models"
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -312,8 +314,22 @@ func (r *Repository) deleteVideo(context *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: Aquí se debería eliminar también los archivos físicos del sistema de archivos
-	// cuando implementemos el almacenamiento real
+	// Eliminar archivos físicos asociados (original y procesado) si existen
+	if video.OriginalURL != nil && *video.OriginalURL != "" {
+		path := "." + *video.OriginalURL
+		fsPath := filepath.FromSlash(path)
+		if err := os.Remove(fsPath); err != nil && !os.IsNotExist(err) {
+			log.Printf("No se pudo eliminar archivo original %s: %v", fsPath, err)
+		}
+	}
+
+	if video.ProcessedURL != nil && *video.ProcessedURL != "" {
+		path := "." + *video.ProcessedURL
+		fsPath := filepath.FromSlash(path)
+		if err := os.Remove(fsPath); err != nil && !os.IsNotExist(err) {
+			log.Printf("No se pudo eliminar archivo procesado %s: %v", fsPath, err)
+		}
+	}
 
 	context.Status(http.StatusOK).JSON(&fiber.Map{
 		"message":  "El video ha sido eliminado exitosamente",
