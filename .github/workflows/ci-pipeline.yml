@@ -27,6 +27,10 @@ jobs:
       - name: Run unit tests
         run: cd backend && go test ./... -coverprofile=coverage.out
 
+      - name: Fix coverage paths
+        run: |
+          sed -i 's|back-end-todolist|backend|g' backend/coverage.out
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         with:
