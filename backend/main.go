@@ -78,7 +78,7 @@ func main() {
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Origin, Content-Type, Authorization",
 		ExposeHeaders:    "Content-Type",
-		AllowCredentials: false,
+		AllowCredentials: true,
 	}))
 
 	app.Static("/uploads", "./uploads")
