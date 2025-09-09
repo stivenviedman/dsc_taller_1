@@ -27,10 +27,10 @@ jobs:
       - name: Run unit tests
         run: cd backend && go test ./... -coverprofile=coverage.out
 
-      - name: Clean coverage file
+      - name: Remove test files from coverage
         run: |
-          grep -vE "_test.go" backend/coverage.out > backend/coverage.tmp
-          mv backend/coverage.tmp backend/coverage.out
+          grep -vE "_test.go" backend/coverage.out > backend/coverage.filtered
+          mv backend/coverage.filtered backend/coverage.out
 
       - name: Fix coverage paths
         run: |
