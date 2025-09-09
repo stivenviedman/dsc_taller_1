@@ -54,7 +54,7 @@ export const api = {
   publicVideos: () => request("/api/public/videos"),
   voteVideo: (token: string, id: number) =>
     request(`/api/public/videos/${id}/vote`, { method: "POST", token }),
-  myVideos: (token: string) => request("/api/video", { token }),
+  myVideos: (token: string) => request("/api/videos", { token }),
   deleteVideo: (token: string, id: number) =>
     request(`/api/videos/${id}`, { method: "DELETE", token }),
   rankings: () => request("/api/public/rankings"),

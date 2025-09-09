@@ -28,7 +28,7 @@ export default function RankingsPage() {
       <h1 className="text-2xl font-bold">Ranking de jugadores</h1>
       {loading ? (
         <div className="opacity-70">Cargando...</div>
-      ) : rows.length === 0 ? (
+      ) : !rows?.length ? (
         <div className="opacity-70">Aún no hay votos.</div>
       ) : (
         <div className="overflow-x-auto">

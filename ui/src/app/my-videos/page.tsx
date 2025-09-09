@@ -53,7 +53,7 @@ function Inner() {
       <h1 className="text-2xl font-bold">Mis videos</h1>
       {loading ? (
         <div className="opacity-70">Cargando...</div>
-      ) : rows.length === 0 ? (
+      ) : !rows?.length ? (
         <div className="opacity-70">Aún no has subido videos.</div>
       ) : (
         <div className="overflow-x-auto">
