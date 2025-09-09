@@ -1,16 +1,17 @@
 # Plan de pruebas de carga
-
+En este documento detallamos la forma en la cual ejecutaremos las pruebas de carga en las siguientes entregas del proyecto. Identificamos las rutas importantes de la aplicación y basado en eso proponemos escenarios clave y métricas asociadas que ayudaran a evaluar la robustez de la aplicación.
 ## Objetivos
 - Identificar puntos en la arquitectura donde se pueden generar cuellos de botella (factores limitantes) que afectan 2 aspectos clave de nuestro proyecto: experiencia de usuario y recursos e infraestructura.
 - Validar la robustez de la aplicación frente a situaciones (pruebas de estres) que impliquen un alto trabajo de computo, generación/eliminación de archivos, entrega de grandes cantidades de información, entre otros.
 ## Infraestructura
 Para la realización de las pruebas seran requeridos 3 servidores con 8 vCPU y 16 GB de RAM y con capacidad de red de unos 10 Gbps, con lo cual se propone usar instancias de tipo (m5.2xlarge) que pueden soportar de manera distribuida unos 500 usuarios que interactuen con la aplicación web ya sea subiendo videos, votando o consultando rankings. Tambien se propone mantener las 3 instancias en una VPC diferente a donde esta alojada la aplicacion (todsd sus instancias), esto con el fin de evaluar en las pruebas la latencia de la red.
 
-Por otro lado, se propone usar Apache JMeter con los listeners: summary report, aggregate report, response time graph, response latencias over time y un backend listener en conjunto con InfluxDB y Grafana para tener un dashboard en vivo de las metricas de interés. Ademas, junto con AWS CloudWatch y Grafana se propone visualizar el uso de los recursos de las maquinas.
+Por otro lado, se propone usar Apache JMeter con los listeners: summary report, aggregate report, response time graph, response latencies over time y un backend listener en conjunto con InfluxDB y Grafana para tener un dashboard en vivo de las metricas de interés. Ademas, junto con AWS CloudWatch y Grafana se propone visualizar el uso de los recursos de las maquinas.
 
 A continuación se muestra un esquema de la arquitectura del proceso de pruebas. 
-
-<\ESQUEMA>
+<p align="center">
+<img src="load_test.png" alt="Arquitectura" width="250"/>
+</p>
 
 ## Indicadores
 Considerando la arquitectura y funcionamiento de nuestra app, es de interes considerar los siguientes puntos a lo largo de la aplicación y en cada uno definir las metricas a revisar:
@@ -55,6 +56,7 @@ En esta sección detallamos los escenarios que consideramos importantes consider
 |**Consumo de Recursos**: Bajo el escenario de 500 usuarios concurrentes|Uso de NIC |$\leq$ 70% (7 Gbps)|
 |**Robustez del backend**: Con usuarios ejecutando diferentes tareas (subir videos, visualizar, votar, consultar rankings)|Usuarios concurrentes soportados por la API|$\geq$ 400 usuarios|
 |**Robustez del backend**: Con usuarios ejecutando diferentes tareas (subir videos, visualizar, votar, consultar rankings)|Throughput máximo|100-200 req/s|
-## Simulaciones
 
-¿?
+Finalmente destacamos entre todas las funcionalidades de la aplicación web dos rutas o escenarios que los usuarios con frecuencia estaran utilizando y por lo tanto, son fundamentales:
+- ingreso $\to$ carga del video.
+- ingreso $\to$ listado de videos $\to$ visualización video. 
