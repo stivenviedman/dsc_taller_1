@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -31,12 +30,6 @@ func AutValidation(c *fiber.Ctx) error {
 		return jwtSecret, nil
 	})
 
-	fmt.Println(Token)
-	if claims, ok := Token.Claims.(jwt.MapClaims); ok && Token.Valid {
-		fmt.Println("Claims:", claims)
-		fmt.Println("Usuario:", claims["username"])
-	}
-
 	if err != nil || !Token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"error": "Token inválido",
@@ -51,12 +44,14 @@ func AutValidation(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func GenerarToken(username string, id uint) (string, error) {
+func GenerarToken(username string, id uint) (string, int64, error) {
 
+	minutes := time.Duration(60) * time.Minute
+	time_exp := int64(minutes.Seconds())
 	datos := jwt.MapClaims{
 		"username": username,
 		"userId":   id,
-		"exp":      time.Now().Add(time.Minute * 60).Unix(),
+		"exp":      time.Now().Add(minutes).Unix(),
 		"iat":      time.Now().Unix(),
 	}
 
@@ -64,10 +59,10 @@ func GenerarToken(username string, id uint) (string, error) {
 
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 
-	return tokenString, nil
+	return tokenString, time_exp, nil
 }
 
 func HashPassword(password string) (string, error) {

@@ -130,7 +130,10 @@ func (r *Repository) voteForVideo(context *fiber.Ctx) error {
 
 	if err == nil {
 		// Ya existe
-		return fiber.NewError(fiber.StatusConflict, "Ya votaste por este video")
+		//return fiber.NewError(fiber.StatusConflict, "Ya votaste por este video")
+		return context.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"message": "Ya votaste por este video",
+		})
 	}
 
 	// Si no existe, crear el voto

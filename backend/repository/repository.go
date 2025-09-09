@@ -3,7 +3,6 @@ package repository
 import (
 	"back-end-todolist/middlewares"
 	"back-end-todolist/models"
-	"fmt"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,6 +22,11 @@ type UserRequest struct {
 	City      *string `json:"city"`
 	Country   *string `json:"country"`
 	Type      *string `json:"type"`
+}
+
+type LoginRequest struct {
+	Email    *string `json:"email"`
+	Password *string `json:"password"`
 }
 
 /*---User functions----*/
@@ -52,8 +56,11 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 			&fiber.Map{"message": "Ya existen perfiles con ese email"})
 	}
 
-	fmt.Printf("Pass1: %s\n", *user.Password1)
-	fmt.Printf("Pass2 %s\n", *user.Password2)
+	if user.Password1 == nil || user.Password2 == nil {
+		return context.Status(http.StatusBadRequest).JSON(
+			fiber.Map{"message": "Debe enviar password1 y password2"})
+	}
+
 	if *user.Password1 != *user.Password2 {
 		return context.Status(http.StatusBadRequest).JSON(
 			&fiber.Map{"message": "Contraseñas no coinciden"})
@@ -68,6 +75,14 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 	}
 
 	hashedP := string(hashPasw)
+
+	userType := ""
+	if user.Type == nil {
+		userType = "player"
+	} else {
+		userType = *user.Type
+	}
+
 	userInsert := models.User{
 		Email:     user.Email,
 		FirstName: user.FirstName,
@@ -75,7 +90,7 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 		Password:  &hashedP,
 		City:      user.City,
 		Country:   user.Country,
-		Type:      user.Type,
+		Type:      &userType,
 	}
 
 	errCreate := r.DB.Create(&userInsert).Error
@@ -97,7 +112,7 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 		return errSelect
 	}
 
-	token, errToken := middlewares.GenerarToken(*user.Email, dbuser.ID)
+	token, time, errToken := middlewares.GenerarToken(*user.Email, dbuser.ID)
 
 	if errToken != nil {
 		context.Status(http.StatusInternalServerError).JSON(
@@ -109,12 +124,12 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 		&fiber.Map{"message": "Se creo el usuario correctamente",
 			"token":      token,
 			"token_type": "Bearer",
-			"expires_in": 900})
+			"expires_in": time})
 }
 
 func (r *Repository) LoginUser(context *fiber.Ctx) error {
 
-	user := models.User{}
+	user := LoginRequest{}
 
 	err := context.BodyParser(&user)
 
@@ -129,21 +144,23 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	errSelect := r.DB.Where("Email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
+		if errSelect == gorm.ErrRecordNotFound {
+			return context.Status(fiber.StatusNotFound).JSON(
+				fiber.Map{"message": "Correo incorrecto"},
+			)
+		}
 		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo encontrar el usuario"})
 
 		return errSelect
 	}
 
-	fmt.Printf("Usuario: %s\n", *user.Password)
-	fmt.Printf("Usuario DB %s\n", *dbuser.Password)
-
 	if !(middlewares.CheckPasswordHash(*user.Password, *dbuser.Password)) {
 		return context.Status(http.StatusForbidden).JSON(
 			&fiber.Map{"message": "Contraseña incorrecta"})
 	}
 
-	token, errToken := middlewares.GenerarToken(*dbuser.Email, dbuser.ID)
+	token, time, errToken := middlewares.GenerarToken(*dbuser.Email, dbuser.ID)
 
 	if errToken != nil {
 		context.Status(http.StatusInternalServerError).JSON(
@@ -156,7 +173,7 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 		&fiber.Map{"message": "Ingreso exitoso",
 			"token":      token,
 			"token_type": "Bearer",
-			"expires_in": 900})
+			"expires_in": time})
 }
 
 func (r *Repository) SetupRoutes(app *fiber.App) {
