@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { PublicVideo } from "@/lib/types";
 import { useAuth } from "@/context/AuthContext";
-import { api } from "@/lib/apis";
+import { api, BASE } from "@/lib/apis";
 
 export default function VideoCard({ v, onVoted }: { v: PublicVideo; onVoted?: () => void }) {
   const { token, isAuthed } = useAuth();
@@ -33,7 +33,7 @@ export default function VideoCard({ v, onVoted }: { v: PublicVideo; onVoted?: ()
         {v.User?.firstName} {v.User?.lastName} · {v.User?.city ?? ""}{v.User?.city ? " · " : ""}{v.status}
       </div>
       <div className="aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
-        <video src={src} controls className="h-full w-full" />
+        <video src={`${BASE}${src}`} controls className="h-full w-full" />
       </div>
       <div className="mt-3 flex items-center justify-between">
         <div className="font-medium">{v.title}</div>
