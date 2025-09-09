@@ -144,6 +144,11 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 	errSelect := r.DB.Where("Email = ?", user.Email).First(&dbuser).Error
 
 	if errSelect != nil {
+		if errSelect == gorm.ErrRecordNotFound {
+			return context.Status(fiber.StatusNotFound).JSON(
+				fiber.Map{"message": "Correo incorrecto"},
+			)
+		}
 		context.Status(http.StatusInternalServerError).JSON(
 			&fiber.Map{"message": "No se pudo encontrar el usuario"})
 
