@@ -1,0 +1,205 @@
+definitions:
+  models.RankingView:
+    properties:
+      city:
+        type: string
+      email:
+        type: string
+      userID:
+        type: integer
+      votes:
+        type: integer
+    type: object
+  models.User:
+    properties:
+      city:
+        type: string
+      country:
+        type: string
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      lastName:
+        type: string
+      type:
+        type: string
+    type: object
+  models.Video:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      originalUrl:
+        type: string
+      processedAt:
+        type: string
+      processedUrl:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+      user_id:
+        description: Relacion con User
+        type: integer
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/login:
+    post:
+      description: Inicia sesion un usuario (player/fan)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Inicia sesion un usuario
+      tags:
+      - users
+  /auth/signup:
+    post:
+      description: Se registra un usuario (player/fan)
+      parameters:
+      - description: Datos del usuario
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Registra un nuevo usuario
+      tags:
+      - users
+  /create_video:
+    post:
+      description: Un usuario tipo player autenticado, puede subir un video
+      parameters:
+      - description: Datos del video
+        in: body
+        name: video
+        required: true
+        schema:
+          $ref: '#/definitions/models.Video'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Video'
+            type: array
+      summary: Carga un video en el sistema
+      tags:
+      - videos
+  /public/rankings:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.RankingView'
+            type: array
+      summary: Obtiene los rankings de los videos votados
+      tags:
+      - rankings
+  /public/videos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Video'
+            type: array
+      summary: Obtiene todos los videos disponibles para votar
+      tags:
+      - videos
+  /public/videos/:videoId/vote:
+    post:
+      parameters:
+      - description: ID del video
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: voto registrado con exito
+          schema:
+            type: string
+      summary: Un usuario autenticado puede votar por un video
+      tags:
+      - votes
+  /videos:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Video'
+            type: array
+      summary: Obtiene todos los videos del usuario autenticado
+      tags:
+      - videos
+  /videos/:video_id:
+    delete:
+      parameters:
+      - description: ID del video
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: video eliminado
+          schema:
+            type: string
+      summary: Elimina un video por id
+      tags:
+      - videos
+    get:
+      parameters:
+      - description: ID del video
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Video'
+      summary: Obtiene un video por id
+      tags:
+      - videos
+swagger: "2.0"

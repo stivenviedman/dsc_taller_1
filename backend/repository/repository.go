@@ -29,7 +29,13 @@ type LoginRequest struct {
 	Password *string `json:"password"`
 }
 
-/*---User functions----*/
+// @Summary      Registra un nuevo usuario
+// @Description  Se registra un usuario (player/fan)
+// @Tags         users
+// @Produce      json
+// @Param        user  body  models.User true  "Datos del usuario"
+// @Success      200 {object}  models.User
+// @Router       /auth/signup [post]
 func (r *Repository) CreateUser(context *fiber.Ctx) error {
 
 	user := UserRequest{}
@@ -127,6 +133,12 @@ func (r *Repository) CreateUser(context *fiber.Ctx) error {
 			"expires_in": time})
 }
 
+// @Summary      Inicia sesion un usuario
+// @Description  Inicia sesion un usuario (player/fan)
+// @Tags         users
+// @Produce      json
+// @Success      200 {object}  models.User
+// @Router       /auth/login [post]
 func (r *Repository) LoginUser(context *fiber.Ctx) error {
 
 	user := LoginRequest{}

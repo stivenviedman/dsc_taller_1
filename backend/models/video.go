@@ -6,6 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// swagger:model
 type Video struct {
 	ID           uint    `gorm:"primaryKey;autoIncrement" json:"id"`
 	ProcessedURL *string `json:"processedUrl"`

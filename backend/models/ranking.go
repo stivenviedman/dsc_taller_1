@@ -1,5 +1,6 @@
 package models
 
+// swagger:model
 type RankingView struct {
 	UserID int    `gorm:"column:user_id"`
 	Email  string `gorm:"column:email"`

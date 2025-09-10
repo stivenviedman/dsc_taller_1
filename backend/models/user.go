@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// swagger:model
 type User struct {
 	ID        uint    `gorm:"primaryKey;autoIncrement" json:"id"`
 	Email     *string `json:"email"`

@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// swagger:model
 type Vote struct {
 	//Relacion con User
 	UserID uint `json:"user_id" gorm:"primaryKey"`

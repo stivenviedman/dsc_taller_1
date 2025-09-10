@@ -7,7 +7,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-/*---Ranking view functions----*/
+// @Summary      Obtiene los rankings de los videos votados
+// @Tags         rankings
+// @Produce      json
+// @Success      200  {array}   models.RankingView
+// @Router       /public/rankings [get]
 func (r *Repository) getRankings(context *fiber.Ctx) error {
 
 	rankings := []models.RankingView{}

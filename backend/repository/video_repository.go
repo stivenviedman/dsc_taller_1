@@ -17,7 +17,13 @@ import (
 	"gorm.io/gorm"
 )
 
-/*---Video functions----*/
+// @Summary      Carga un video en el sistema
+// @Description  Un usuario tipo player autenticado, puede subir un video
+// @Tags         videos
+// @Produce      json
+// @Param        video  body  models.Video true  "Datos del video"
+// @Success      200 {array}  models.Video
+// @Router       /create_video [post]
 func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	userID := ctx.Locals("userID").(uint)
 
@@ -89,6 +95,11 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	})
 }
 
+// @Summary      Obtiene todos los videos disponibles para votar
+// @Tags         videos
+// @Produce      json
+// @Success      200  {array}   models.Video
+// @Router       /public/videos [get]
 func (r *Repository) getAllVideos(context *fiber.Ctx) error {
 
 	videos := &[]models.Video{}
@@ -111,6 +122,12 @@ func (r *Repository) getAllVideos(context *fiber.Ctx) error {
 	return nil
 }
 
+// @Summary      Un usuario autenticado puede votar por un video
+// @Tags         votes
+// @Produce      json
+// @Param        id   path      int  true  "ID del video"
+// @Success 200 {string} string "voto registrado con exito"
+// @Router       /public/videos/:videoId/vote [post]
 func (r *Repository) voteForVideo(context *fiber.Ctx) error {
 
 	videoId := context.Params("videoId")
@@ -150,7 +167,11 @@ func (r *Repository) voteForVideo(context *fiber.Ctx) error {
 	})
 }
 
-/*---Get My Videos----*/
+// @Summary      Obtiene todos los videos del usuario autenticado
+// @Tags         videos
+// @Produce      json
+// @Success      200  {array}   models.Video
+// @Router       /videos [get]
 func (r *Repository) getMyVideos(context *fiber.Ctx) error {
 	// Obtiene el userId a partir del token
 	userID := context.Locals("userID").(uint)
@@ -200,7 +221,12 @@ func (r *Repository) getMyVideos(context *fiber.Ctx) error {
 	return nil
 }
 
-/*---Get Video Detail----*/
+// @Summary      Obtiene un video por id
+// @Tags         videos
+// @Produce      json
+// @Param        id   path      int  true  "ID del video"
+// @Success      200  {object}  models.Video
+// @Router       /videos/:video_id [get]
 func (r *Repository) getVideoDetail(context *fiber.Ctx) error {
 	// Obtiene el userId a partir del token
 	userID := context.Locals("userID").(uint)
@@ -265,7 +291,12 @@ func (r *Repository) getVideoDetail(context *fiber.Ctx) error {
 	return nil
 }
 
-/*---Delete Video----*/
+// @Summary      Elimina un video por id
+// @Tags         videos
+// @Produce      json
+// @Param        id   path      int  true  "ID del video"
+// @Success      200  {string}  "video eliminado"
+// @Router       /videos/:video_id [delete]
 func (r *Repository) deleteVideo(context *fiber.Ctx) error {
 	// Obtiene el userId a partir del token
 	userID := context.Locals("userID").(uint)
