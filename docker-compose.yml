@@ -59,6 +59,7 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8080
+      API_BASE_URL: http://backend:8080
     volumes:
       - ./ui:/app
       - /app/node_modules

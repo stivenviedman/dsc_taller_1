@@ -2,12 +2,21 @@
 import { useState } from "react";
 import { PublicVideo } from "@/lib/types";
 import { useAuth } from "@/context/AuthContext";
-import { api, BASE } from "@/lib/apis";
+import { api } from "@/lib/apis";
 
-export default function VideoCard({ v, onVoted }: { v: PublicVideo; onVoted?: () => void }) {
+export default function VideoCard({
+  v,
+  onVoted,
+}: {
+  v: PublicVideo;
+  onVoted?: () => void;
+}) {
   const { token, isAuthed } = useAuth();
   const [submitting, setSubmitting] = useState(false);
   const src = v.processedUrl || v.originalUrl;
+
+  // Now videos go through Next.js proxy route
+  const videoUrl = `/api/proxy${src}`;
 
   const vote = async () => {
     if (!isAuthed || !token) return alert("Debes iniciar sesión para votar.");
@@ -30,10 +39,21 @@ export default function VideoCard({ v, onVoted }: { v: PublicVideo; onVoted?: ()
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
       <div className="mb-2 text-sm text-white/60">
-        {v.User?.firstName} {v.User?.lastName} · {v.User?.city ?? ""}{v.User?.city ? " · " : ""}{v.status}
+        {v.User?.firstName} {v.User?.lastName} · {v.User?.city ?? ""}
+        {v.User?.city ? " · " : ""}
+        {v.status}
       </div>
       <div className="aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
-        <video src={`${BASE}${src}`} controls className="h-full w-full" />
+        <video
+          src={videoUrl}
+          controls
+          className="h-full w-full"
+          preload="metadata"
+          onError={(e) => {
+            console.error("Video load error:", e);
+            console.error("Video URL:", videoUrl);
+          }}
+        />
       </div>
       <div className="mt-3 flex items-center justify-between">
         <div className="font-medium">{v.title}</div>
