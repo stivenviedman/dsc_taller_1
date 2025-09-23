@@ -69,8 +69,13 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	}
 
 	// Enqueue task
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+
 	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
-	client := asynq.NewClient(asynq.RedisClientOpt{Addr: "redis:6379"})
+	client := asynq.NewClient(
+		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
+	)
 	defer client.Close()
 
 	info, err := client.Enqueue(task)

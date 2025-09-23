@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 	"os/exec"
 	"time"
 
@@ -16,9 +17,11 @@ import (
 
 func main() {
 	db := bootstrap.InitDB()
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
 
 	srv := asynq.NewServer(
-		asynq.RedisClientOpt{Addr: "redis:6379"},
+		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
 		asynq.Config{Concurrency: 5},
 	)
 

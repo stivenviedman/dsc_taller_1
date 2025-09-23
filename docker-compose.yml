@@ -28,6 +28,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: admin
       DB_NAME: anb-dev
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
       - "8080:8080"
     volumes:
@@ -47,6 +49,8 @@ services:
       DB_USER: postgres
       DB_PASSWORD: admin
       DB_NAME: anb-dev
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/processed:/app/processed
