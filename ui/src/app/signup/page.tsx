@@ -30,7 +30,15 @@ export default function SignupPage() {
       login(res, form.email);
       router.replace("/");
     } catch (e: any) {
-      alert(e?.message || "No se pudo crear la cuenta");
+
+      let errorMessage = "No se pudo crear la cuenta";
+      if (e?.message) {
+        errorMessage = e.message;
+      } else if (e?.payload?.message) {
+        errorMessage = e.payload.message;
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }

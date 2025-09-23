@@ -1,4 +1,4 @@
-export const BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8080";
+export const BASE = "/api";
 
 type FetchOpts = {
   method?: "GET" | "POST" | "DELETE";
@@ -12,7 +12,7 @@ async function request<T>(path: string, opts: FetchOpts = {}): Promise<T> {
   if (!opts.isFormData) headers["Content-Type"] = "application/json";
   if (opts.token) headers["Authorization"] = `Bearer ${opts.token}`;
 
-  const res = await fetch(`${BASE}${path}`, {
+  const res = await fetch(`/api${path}`, {
     method: opts.method || "GET",
     headers,
     body: opts.isFormData
@@ -38,24 +38,24 @@ async function request<T>(path: string, opts: FetchOpts = {}): Promise<T> {
 }
 
 export const api = {
-  signup: (body: any) => request("/api/auth/signup", { method: "POST", body }),
-  login: (body: any) => request("/api/auth/login", { method: "POST", body }),
+  signup: (body: any) => request("/auth/signup", { method: "POST", body }),
+  login: (body: any) => request("/auth/login", { method: "POST", body }),
   uploadVideo: (token: string, file: File, title: string) => {
     const fd = new FormData();
     fd.append("video_file", file);
     fd.append("title", title);
-    return request("/api/create_video", {
+    return request("/create_video", {
       method: "POST",
       token,
       body: fd,
       isFormData: true,
     });
   },
-  publicVideos: () => request("/api/public/videos"),
+  publicVideos: () => request("/public/videos"),
   voteVideo: (token: string, id: number) =>
-    request(`/api/public/videos/${id}/vote`, { method: "POST", token }),
-  myVideos: (token: string) => request("/api/videos", { token }),
+    request(`/public/videos/${id}/vote`, { method: "POST", token }),
+  myVideos: (token: string) => request("/videos", { token }),
   deleteVideo: (token: string, id: number) =>
-    request(`/api/videos/${id}`, { method: "DELETE", token }),
-  rankings: () => request("/api/public/rankings"),
+    request(`/videos/${id}`, { method: "DELETE", token }),
+  rankings: () => request("/public/rankings"),
 };
