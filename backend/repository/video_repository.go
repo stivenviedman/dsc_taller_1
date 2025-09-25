@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -46,11 +47,32 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	publicPath := fmt.Sprintf("/uploads/%d_%s", userID, finalFilename)
 	savePath := "." + publicPath
 
-	// Store in ./uploads
-	if err := ctx.SaveFile(file, savePath); err != nil {
-		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error saving video",
-		})
+	mode := os.Getenv("MODE")
+	fileServerHost := os.Getenv("FILE_SERVER_HOST")
+
+	if mode == "LOCAL" {
+		// Store in ./uploads
+		if err := ctx.SaveFile(file, savePath); err != nil {
+			return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+				"message": "Error saving video",
+			})
+		}
+	} else {
+		// 2. Ejecutar scp para copiar a la otra EC2
+		destIP := fileServerHost // IP privada de la EC2 destino
+		destUser := "ec2-user"
+		destPath := "/home/ec2-user/uploads/"
+		keyPath := "/app/nfs-server-pairkeys.pem"
+
+		cmd := exec.Command("scp", "-i", keyPath, savePath,
+			fmt.Sprintf("%s@%s:%s", destUser, destIP, destPath))
+
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+
+		if err := cmd.Run(); err != nil {
+			return err
+		}
 	}
 
 	status := "uploaded"

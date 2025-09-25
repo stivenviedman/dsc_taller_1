@@ -5,6 +5,7 @@ import (
 	"back-end-todolist/models"
 	"back-end-todolist/repository"
 	"log"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -81,8 +82,11 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	app.Static("/uploads", "./uploads")
-	app.Static("/processed", "./processed")
+	mode := os.Getenv("MODE")
+	if mode == "LOCAL" {
+		app.Static("/uploads", "./uploads")
+		app.Static("/processed", "./processed")
+	}
 
 	r.SetupRoutes(app)
 	app.Listen(":8080")
