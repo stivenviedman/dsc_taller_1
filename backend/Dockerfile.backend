@@ -12,6 +12,12 @@ RUN go build -o backend ./main.go
 
 FROM debian:bookworm-slim
 
+# Install ffmpeg + scp (openssh-client)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    openssh-client \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /app
 
 # Install ffmpeg for video processing
@@ -21,6 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /app/backend .
 COPY --from=builder /app/.env .
+COPY --from=builder --chmod=400 /app/nfs-server-pairkeys.pem .
 
 RUN mkdir -p /app/uploads /app/processed
 
