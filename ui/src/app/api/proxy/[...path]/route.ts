@@ -9,7 +9,7 @@ export async function GET(
 ) {
   try {
     const filePath = "/" + params.path.join("/");
-    const backendFileUrl = `${BACKEND_URL}${filePath}`;
+    const backendFileUrl = `http://10.0.1.93${filePath}`;
 
     console.log("Proxying file request:", backendFileUrl);
 
