@@ -45,6 +45,38 @@ func main() {
 		publicOutput := fmt.Sprintf("/processed/%d_processed.mp4", p.VideoID)
 		outputPath := "." + publicOutput
 
+		mode := os.Getenv("MODE")
+		fileServerHost := os.Getenv("FILE_SERVER_HOST")
+
+		if mode != "LOCAL" {
+
+			// 2. Ejecutar scp para traer el archivo desde B a C
+			srcIP := fileServerHost // IP privada de la EC2 B
+			srcUser := "ec2-user"
+			srcPath := "/home/ec2-user" + *video.OriginalURL
+			keyPath := "/app/nfs-server-pairkeys.pem"
+
+			// Carpeta donde lo guardas en el contenedor C
+			localPath := "/app" + *video.OriginalURL
+
+			cmd := exec.Command("scp",
+				"-o", "StrictHostKeyChecking=no",
+				"-i", keyPath,
+				fmt.Sprintf("%s@%s:%s", srcUser, srcIP, srcPath),
+				localPath,
+			)
+
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+
+			fmt.Println("Ejecutando SCP desde B hacia C...")
+
+			if err := cmd.Run(); err != nil {
+				fmt.Println("Error ejecutando scp:", err)
+				return err
+			}
+
+		}
 		// Process video with ffmpeg
 		cmd := exec.Command("bash", "-c", fmt.Sprintf(`
 # 1) Intro (2s, negro con texto ANB centrado)
@@ -69,6 +101,33 @@ ffmpeg -f concat -safe 0 -i files.txt -c copy %s -y
 
 		if err := cmd.Run(); err != nil {
 			return err
+		}
+
+		if mode != "LOCAL" {
+			// Store in ./processed in the EC2 NFS
+			// 2. Ejecutar scp para copiar a la otra EC2
+			destIP := fileServerHost // IP privada de la EC2 destino
+			destUser := "ec2-user"
+			destPath := "/home/ec2-user/processed/"
+			keyPath := "/app/nfs-server-pairkeys.pem"
+
+			cmd := exec.Command("scp",
+				"-o", "StrictHostKeyChecking=no",
+				"-i", keyPath,
+				outputPath,
+				fmt.Sprintf("%s@%s:%s", destUser, destIP, destPath))
+
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
+
+			fmt.Println("Copio en processed del NFS exitosamente")
+
+			if err := cmd.Run(); err != nil {
+				fmt.Println("entro al error")
+				fmt.Println(err)
+				return err
+			}
+
 		}
 
 		// Update state in DB
