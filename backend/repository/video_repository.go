@@ -127,6 +127,17 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 		})
 	}
 
+	if mode != "LOCAL" {
+		// Borrar el archivo temporal que se guado en /uploaded
+		// Ruta absoluta dentro del contenedor
+		filePath := filepath.Join("/app", publicPath)
+		// Intentar borrar el archivo
+		if err := os.Remove(filePath); err != nil {
+			fmt.Println("error eliminando el video")
+			fmt.Println(err)
+		}
+	}
+
 	return ctx.JSON(fiber.Map{
 		"message": "Stored video. Processing scheduled.",
 		"task_id": info.ID,

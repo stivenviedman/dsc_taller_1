@@ -128,6 +128,27 @@ ffmpeg -f concat -safe 0 -i files.txt -c copy %s -y
 				return err
 			}
 
+			// Despues de llevarlo al NFS Borra el archivo temporal que se guardo en /uploads
+			// Ruta absoluta dentro del contenedor
+			localPath := "/app" + *video.OriginalURL
+			// Intentar borrar el archivo
+			if err := os.Remove(localPath); err != nil {
+				fmt.Println("error eliminando el video")
+				fmt.Println(err)
+			} else {
+				fmt.Println("archivo temporal borrado exitosamente de /uploads")
+			}
+
+			// Despues de llevarlo al NFS Borra el archivo temporal que se guardo en /processed
+			// Ruta absoluta dentro del contenedor
+			// Intentar borrar el archivo
+			if err := os.Remove("/app" + publicOutput); err != nil {
+				fmt.Println("error eliminando el video")
+				fmt.Println(err)
+			} else {
+				fmt.Println("archivo temporal borrado exitosamente de /processed")
+			}
+
 		}
 
 		// Update state in DB
