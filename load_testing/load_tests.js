@@ -1,35 +1,67 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
-import { Rate } from "k6/metrics";
+import { Trend, Counter, Rate, Gauge } from "k6/metrics";
 
 // Custom metrics
 const voteSuccessRate = new Rate("vote_success_rate");
 const authSuccessRate = new Rate("auth_success_rate");
 const videoUploadSuccessRate = new Rate("video_upload_success_rate");
 
-// TODO: get from environment variables
-const BASE_URL = "http://127.0.0.1:8080";
-const MODE = "LOCAL";
+// Scenario-specific counters
+const scenarioCounter = new Counter("scenario_count");
+const usersCreated = new Counter("users_created");
+const videosUploaded = new Counter("videos_uploaded");
+const votesCast = new Counter("votes_cast");
+
+// Endpoint-specific response time trends
+const authResponseTime = new Trend("auth_response_time");
+const videoUploadResponseTime = new Trend("video_upload_response_time");
+const voteResponseTime = new Trend("vote_response_time");
+const publicVideosResponseTime = new Trend("public_videos_response_time");
+const rankingsResponseTime = new Trend("rankings_response_time");
+const myVideosResponseTime = new Trend("my_videos_response_time");
+
+// Business metrics
+const duplicateVotes = new Counter("duplicate_votes");
+const firstTimeVotes = new Counter("first_time_votes");
+const uploadFailures = new Counter("upload_failures");
+
+// System health metrics
+const activeUsers = new Gauge("active_users");
+const concurrentUploads = new Gauge("concurrent_uploads");
+const videoUploadSize = new Trend("video_upload_size_bytes");
+
+// Environment-configurable variables
+const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8080";
+const TOTAL_STEPS = parseInt(__ENV.TOTAL_STEPS || "100", 10); // how many increments
+const VUS_INCREMENT = parseInt(__ENV.VUS_INCREMENT || "500", 10); // how many users to add each step
+const STEP_DURATION = __ENV.STEP_DURATION || "5m"; // how long each step lasts
+
+const stages = [];
+for (let i = 1; i <= TOTAL_STEPS; i++) {
+  stages.push({ duration: STEP_DURATION, target: i * VUS_INCREMENT });
+}
 
 export const options = {
-  stages:
-    MODE === "LOCAL"
-      ? [
-          { duration: "30s", target: 5 },
-          { duration: "1m", target: 10 },
-          { duration: "1m", target: 20 },
-        ]
-      : [
-          { duration: "2m", target: 10 },
-          { duration: "5m", target: 50 },
-          { duration: "5m", target: 200 },
-          { duration: "10m", target: 500 },
-        ],
+  scenarios: {
+    stress: {
+      executor: "ramping-vus",
+      startVUs: 0,
+      stages: stages,
+    },
+  },
   thresholds: {
+    // Failure rate
     http_req_duration: ["p(95)<2000"],
     http_req_failed: ["rate<0.01"],
-    auth_success_rate: ["rate>0.95"],
-    vote_success_rate: ["rate>0.95"],
+    auth_success_rate: ["rate>0.99"],
+    vote_success_rate: ["rate>0.99"],
+    video_upload_success_rate: ["rate>0.99"],
+    // Time
+    auth_response_time: ["p(95)<500"],
+    video_upload_response_time: ["p(95)<10000"],
+    vote_response_time: ["p(95)<500"],
+    public_videos_response_time: ["p(95)<500"],
   },
 };
 
@@ -86,34 +118,23 @@ export function setup() {
   return { videoBuffers: videoBuffers.length };
 }
 
-export default function (data) {
-  testPublicEndpoints();
-
-  const token = authenticateUser();
-  if (token) {
-    testAuthenticatedEndpoints(token);
-
-    const scenario = Math.random();
-    if (scenario < 0.4) {
-      voterScenario(token);
-    } else if (scenario < 0.7) {
-      basketballPlayerScenario(token);
-    } else {
-      newUserScenario();
-    }
-  }
-
-  sleep(1);
-}
-
+// REMOVED DUPLICATE: Only keep this testPublicEndpoints function
 function testPublicEndpoints() {
+  // Track public videos response time
+  const publicVideosStart = Date.now();
   const publicVideosResp = http.get(`${BASE_URL}/api/public/videos`);
+  publicVideosResponseTime.add(Date.now() - publicVideosStart);
+
   check(publicVideosResp, {
     "GET /api/public/videos returns 200": (r) => r.status === 200,
     "GET /api/public/videos has data": (r) => r.json("data") !== undefined,
   });
 
+  // Track rankings response time
+  const rankingsStart = Date.now();
   const rankingsResp = http.get(`${BASE_URL}/api/public/rankings`);
+  rankingsResponseTime.add(Date.now() - rankingsStart);
+
   check(rankingsResp, {
     "GET /api/public/rankings returns 200": (r) => r.status === 200,
     "GET /api/public/rankings has data": (r) => r.json("data") !== undefined,
@@ -128,9 +149,13 @@ function authenticateUser() {
     password: "1234",
   });
 
+  const startTime = Date.now();
   const loginResp = http.post(`${BASE_URL}/api/auth/login`, loginPayload, {
     headers,
   });
+  const responseTime = Date.now() - startTime;
+
+  authResponseTime.add(responseTime);
 
   const loginSuccess = check(loginResp, {
     "Login successful": (r) => r.status === 200,
@@ -168,6 +193,7 @@ function createAndAuthenticateUser(userIndex) {
   });
 
   if (signupSuccess) {
+    usersCreated.add(1);
     return signupResp.json("token");
   }
 
@@ -180,9 +206,12 @@ function testAuthenticatedEndpoints(token) {
     Authorization: `Bearer ${token}`,
   };
 
+  const myVideosStart = Date.now();
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
     headers: authHeaders,
   });
+  myVideosResponseTime.add(Date.now() - myVideosStart);
+
   check(myVideosResp, {
     "GET /api/videos returns 200": (r) => r.status === 200,
     "GET /api/videos has user videos": (r) => r.json("data") !== undefined,
@@ -190,6 +219,8 @@ function testAuthenticatedEndpoints(token) {
 }
 
 function voterScenario(token) {
+  scenarioCounter.add(1, { scenario: "voter" });
+
   const authHeaders = {
     ...headers,
     Authorization: `Bearer ${token}`,
@@ -207,31 +238,42 @@ function voterScenario(token) {
     if (Math.random() < 0.5) {
       const randomVideo =
         videosData[Math.floor(Math.random() * videosData.length)];
+
+      const voteStart = Date.now();
       const voteResp = http.post(
         `${BASE_URL}/api/public/videos/${randomVideo.id}/vote`,
         null,
         { headers: authHeaders }
       );
+      voteResponseTime.add(Date.now() - voteStart);
 
-      // Count HTTP 409 as "success" for our metrics since it's expected behavior
-      voteSuccessRate.add(voteResp.status === 201 || voteResp.status === 409);
-
-      if (voteResp.status === 409) {
-        console.log(
-          `User already voted for video ${randomVideo.id} - expected behavior`
-        );
+      if (voteResp.status === 201) {
+        firstTimeVotes.add(1);
+        votesCast.add(1);
+        voteSuccessRate.add(true);
+      } else if (voteResp.status === 409) {
+        duplicateVotes.add(1);
+        voteSuccessRate.add(true);
+        console.log(`Already voted for video ${randomVideo.id} (expected)`);
+      } else {
+        voteSuccessRate.add(false);
+        console.log(`Vote failed with status: ${voteResp.status}`);
       }
     }
   }
 }
 
 function basketballPlayerScenario(token) {
+  scenarioCounter.add(1, { scenario: "basketball_player" });
+
   const authHeaders = {
     ...headers,
     Authorization: `Bearer ${token}`,
   };
 
-  // Probability for local testing
+  // Track concurrent uploads
+  concurrentUploads.add(1);
+
   if (Math.random() < 0.5 && videoBuffers.length > 0) {
     const randomVideoIndex = Math.floor(Math.random() * videoBuffers.length);
     const randomTitleIndex = Math.floor(Math.random() * videoTitles.length);
@@ -250,12 +292,17 @@ function basketballPlayerScenario(token) {
 
     console.log(`Attempting to upload: ${randomizedFilename}`);
 
+    const uploadStart = Date.now();
     const uploadResp = http.post(`${BASE_URL}/api/create_video`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
       timeout: "60s",
     });
+    const uploadTime = Date.now() - uploadStart;
+
+    videoUploadResponseTime.add(uploadTime);
+    videoUploadSize.add(videoFile.size);
 
     const uploadSuccess = check(uploadResp, {
       "Video upload successful": (r) => r.status === 200,
@@ -266,21 +313,24 @@ function basketballPlayerScenario(token) {
     videoUploadSuccessRate.add(uploadSuccess);
 
     if (uploadSuccess) {
-      console.log(`✅ Uploaded: ${videoTitle} (${randomizedFilename})`);
-      console.log(`   Task ID: ${uploadResp.json("task_id")}`);
-      console.log(`   Video ID: ${uploadResp.json("video.id")}`);
+      videosUploaded.add(1);
+      console.log(
+        `✅ Uploaded: ${videoTitle} (${randomizedFilename}) in ${uploadTime}ms`
+      );
     } else {
-      console.log(`❌ Upload failed: ${uploadResp.status}`);
+      uploadFailures.add(1);
+      console.log(`❌ Upload failed: ${uploadResp.status} in ${uploadTime}ms`);
       console.log(`   Response: ${uploadResp.body}`);
 
-      // Log specific error types
       if (uploadResp.status === 400) {
-        console.log(`   Error: Missing video file or invalid data`);
+        console.log(`❌ Error: Missing video file or invalid data`);
       } else if (uploadResp.status === 500) {
-        console.log(`   Error: Server error - check backend logs`);
+        console.log(`❌ Error: Server error - check backend logs`);
       }
     }
   }
+
+  concurrentUploads.add(-1);
 
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
     headers: authHeaders,
@@ -292,11 +342,13 @@ function basketballPlayerScenario(token) {
   });
 
   if (videosCheck && myVideosResp.json("data")) {
-    console.log(`📹 User has ${myVideosResp.json("data").length} videos`);
+    console.log(`User has ${myVideosResp.json("data").length} videos`);
   }
 }
 
 function newUserScenario() {
+  scenarioCounter.add(1, { scenario: "new_user" });
+
   const randomString = generateRandomString(6);
   const newUser = {
     first_name: "New",
@@ -316,6 +368,7 @@ function newUserScenario() {
   );
 
   if (signupResp.status === 200) {
+    usersCreated.add(1);
     const token = signupResp.json("token");
     const authHeaders = {
       ...headers,
@@ -331,8 +384,27 @@ function newUserScenario() {
   }
 }
 
-export function teardown(data) {
-  console.log(
-    `Teardown: Load test completed. Used ${data.videoBuffers} video files`
-  );
+export default function () {
+  activeUsers.add(1);
+
+  testPublicEndpoints();
+
+  const token = authenticateUser();
+  if (token) {
+    testAuthenticatedEndpoints(token);
+
+    const scenario = Math.random();
+    if (scenario < 0.4) {
+      voterScenario(token);
+    } else if (scenario < 0.7) {
+      basketballPlayerScenario(token);
+    } else {
+      newUserScenario();
+    }
+  }
+
+  sleep(1);
+  activeUsers.add(-1);
 }
+
+export function teardown() {}
