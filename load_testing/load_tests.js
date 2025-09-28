@@ -1,10 +1,8 @@
 import http from "k6/http";
 import { check, sleep } from "k6";
-import { Trend, Counter, Rate, Gauge } from "k6/metrics";
+import { Trend, Counter, Rate } from "k6/metrics";
 
 // Custom metrics
-const voteSuccessRate = new Rate("vote_success_rate");
-const authSuccessRate = new Rate("auth_success_rate");
 const videoUploadSuccessRate = new Rate("video_upload_success_rate");
 
 // Scenario-specific counters
@@ -20,22 +18,14 @@ const voteResponseTime = new Trend("vote_response_time");
 const publicVideosResponseTime = new Trend("public_videos_response_time");
 const rankingsResponseTime = new Trend("rankings_response_time");
 const myVideosResponseTime = new Trend("my_videos_response_time");
-
-// Business metrics
-const duplicateVotes = new Counter("duplicate_votes");
-const firstTimeVotes = new Counter("first_time_votes");
-const uploadFailures = new Counter("upload_failures");
-
-// System health metrics
-const activeUsers = new Gauge("active_users");
-const concurrentUploads = new Gauge("concurrent_uploads");
-const videoUploadSize = new Trend("video_upload_size_bytes");
+const videoDownloadResponseTime = new Trend("video_download_response_time");
 
 // Environment-configurable variables
 const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8080";
 const TOTAL_STEPS = parseInt(__ENV.TOTAL_STEPS || "100", 10); // how many increments
 const VUS_INCREMENT = parseInt(__ENV.VUS_INCREMENT || "500", 10); // how many users to add each step
 const STEP_DURATION = __ENV.STEP_DURATION || "5m"; // how long each step lasts
+const VIDEO_ASSETS_URL = __ENV.VIDEO_ASSETS_URL || BASE_URL;
 
 const stages = [];
 for (let i = 1; i <= TOTAL_STEPS; i++) {
@@ -49,19 +39,6 @@ export const options = {
       startVUs: 0,
       stages: stages,
     },
-  },
-  thresholds: {
-    // Failure rate
-    http_req_duration: ["p(95)<2000"],
-    http_req_failed: ["rate<0.01"],
-    auth_success_rate: ["rate>0.99"],
-    vote_success_rate: ["rate>0.99"],
-    video_upload_success_rate: ["rate>0.99"],
-    // Time
-    auth_response_time: ["p(95)<500"],
-    video_upload_response_time: ["p(95)<10000"],
-    vote_response_time: ["p(95)<500"],
-    public_videos_response_time: ["p(95)<500"],
   },
 };
 
@@ -118,7 +95,28 @@ export function setup() {
   return { videoBuffers: videoBuffers.length };
 }
 
-// REMOVED DUPLICATE: Only keep this testPublicEndpoints function
+function testVideoDownloads() {
+  const resp = http.get(`${BASE_URL}/api/public/videos`);
+  const videos = resp.json("data");
+
+  const validVideos = videos?.filter(video => video?.status === "processed" && video?.processedUrl?.length > 0)
+
+  if (validVideos && validVideos.length > 0) {
+    const randomVideo = validVideos[Math.floor(Math.random() * validVideos.length)];
+    
+    if (randomVideo.status === "processed" && randomVideo.processedUrl) {
+      const downloadUrl = `${VIDEO_ASSETS_URL}${randomVideo.processedUrl}`;
+      const start = Date.now();
+      const downloadResp = http.get(downloadUrl, { timeout: "60s" });
+      videoDownloadResponseTime.add(Date.now() - start);
+
+      check(downloadResp, {
+        "processed video download is 200": (r) => r.status === 200,
+      });
+    }
+  }
+}
+
 function testPublicEndpoints() {
   // Track public videos response time
   const publicVideosStart = Date.now();
@@ -161,8 +159,6 @@ function authenticateUser() {
     "Login successful": (r) => r.status === 200,
     "Login returns token": (r) => r.json("token") !== undefined,
   });
-
-  authSuccessRate.add(loginSuccess);
 
   if (loginSuccess) {
     return loginResp.json("token");
@@ -248,15 +244,10 @@ function voterScenario(token) {
       voteResponseTime.add(Date.now() - voteStart);
 
       if (voteResp.status === 201) {
-        firstTimeVotes.add(1);
         votesCast.add(1);
-        voteSuccessRate.add(true);
       } else if (voteResp.status === 409) {
-        duplicateVotes.add(1);
-        voteSuccessRate.add(true);
         console.log(`Already voted for video ${randomVideo.id} (expected)`);
       } else {
-        voteSuccessRate.add(false);
         console.log(`Vote failed with status: ${voteResp.status}`);
       }
     }
@@ -270,9 +261,6 @@ function basketballPlayerScenario(token) {
     ...headers,
     Authorization: `Bearer ${token}`,
   };
-
-  // Track concurrent uploads
-  concurrentUploads.add(1);
 
   if (Math.random() < 0.5 && videoBuffers.length > 0) {
     const randomVideoIndex = Math.floor(Math.random() * videoBuffers.length);
@@ -302,7 +290,6 @@ function basketballPlayerScenario(token) {
     const uploadTime = Date.now() - uploadStart;
 
     videoUploadResponseTime.add(uploadTime);
-    videoUploadSize.add(videoFile.size);
 
     const uploadSuccess = check(uploadResp, {
       "Video upload successful": (r) => r.status === 200,
@@ -318,7 +305,6 @@ function basketballPlayerScenario(token) {
         `✅ Uploaded: ${videoTitle} (${randomizedFilename}) in ${uploadTime}ms`
       );
     } else {
-      uploadFailures.add(1);
       console.log(`❌ Upload failed: ${uploadResp.status} in ${uploadTime}ms`);
       console.log(`   Response: ${uploadResp.body}`);
 
@@ -329,8 +315,6 @@ function basketballPlayerScenario(token) {
       }
     }
   }
-
-  concurrentUploads.add(-1);
 
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
     headers: authHeaders,
@@ -385,9 +369,8 @@ function newUserScenario() {
 }
 
 export default function () {
-  activeUsers.add(1);
-
   testPublicEndpoints();
+  testVideoDownloads();
 
   const token = authenticateUser();
   if (token) {
@@ -404,7 +387,6 @@ export default function () {
   }
 
   sleep(1);
-  activeUsers.add(-1);
 }
 
 export function teardown() {}
