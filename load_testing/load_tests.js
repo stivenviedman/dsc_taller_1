@@ -74,8 +74,6 @@ const videoBuffers = videoFiles.map((filename) => {
   }
 }).filter(Boolean);
 
-console.log(`Successfully loaded ${videoBuffers.length} video files`);
-
 function generateRandomString(length = 8) {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -87,7 +85,6 @@ function generateRandomString(length = 8) {
 }
 
 export function setup() {
-  console.log("Setup: Starting test with pre-loaded video files");
   return { videoBuffers: videoBuffers.length };
 }
 
