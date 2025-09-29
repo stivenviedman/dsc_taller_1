@@ -1,6 +1,7 @@
 // This command must be executed in the following way
 // k6 run -e BASE_URL=http://localhost:8080 -e TOTAL_STEPS=3 -e VUS_INCREMENT=5 -e STEP_DURATION=30s -e VIDEO_ASSETS_URL=http://localhost:8080 load_tests.js
 // k6 run -e BASE_URL=http://10.0.1.32:8080 -e TOTAL_STEPS=10 -e VUS_INCREMENT=1000 -e STEP_DURATION=5m -e VIDEO_ASSETS_URL=http://http://10.0.1.93 load_tests.js
+// k6 run -e BASE_URL=http://34.200.228.126:3000 -e TOTAL_STEPS=10 -e VUS_INCREMENT=1000 -e STEP_DURATION=5m -e VIDEO_ASSETS_URL=http://34.200.228.126:3000 load_tests.js
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter, Rate } from "k6/metrics";
@@ -11,7 +12,6 @@ const videoUploadSuccessRate = new Rate("video_upload_success_rate");
 // Scenario-specific counters
 const scenarioCounter = new Counter("scenario_count");
 const usersCreated = new Counter("users_created");
-const videosUploaded = new Counter("videos_uploaded");
 const votesCast = new Counter("votes_cast");
 
 // Endpoint-specific response time trends
@@ -62,18 +62,6 @@ const videoTitles = [
   "Free Throw Practice",
 ];
 
-// Load video files in INIT stage (global scope)
-const videoFiles = ["video1.mp4", "video2.mp4"];
-const videoBuffers = videoFiles.map((filename) => {
-  try {
-    const file = open(`./videos/${filename}`, "b");
-    return { filename, buffer: file };
-  } catch (error) {
-    console.error(`Failed to load ${filename}: ${error.message}`);
-    return null;
-  }
-}).filter(Boolean);
-
 function generateRandomString(length = 8) {
   const chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -84,19 +72,18 @@ function generateRandomString(length = 8) {
   return result;
 }
 
-export function setup() {
-  return { videoBuffers: videoBuffers.length };
-}
-
 function testVideoDownloads() {
   const resp = http.get(`${BASE_URL}/api/public/videos`);
   const videos = resp.json("data");
 
-  const validVideos = videos?.filter(video => video?.status === "processed" && video?.processedUrl?.length > 0)
+  const validVideos = videos?.filter(
+    (video) => video?.status === "processed" && video?.processedUrl?.length > 0
+  );
 
   if (validVideos && validVideos.length > 0) {
-    const randomVideo = validVideos[Math.floor(Math.random() * validVideos.length)];
-    
+    const randomVideo =
+      validVideos[Math.floor(Math.random() * validVideos.length)];
+
     if (randomVideo.status === "processed" && randomVideo.processedUrl) {
       const downloadUrl = `${VIDEO_ASSETS_URL}${randomVideo.processedUrl}`;
       const start = Date.now();
@@ -145,6 +132,8 @@ function authenticateUser() {
     headers,
   });
   const responseTime = Date.now() - startTime;
+
+  console.log("loginResp:: ", loginResp);
 
   authResponseTime.add(responseTime);
 
@@ -255,31 +244,18 @@ function basketballPlayerScenario(token) {
     Authorization: `Bearer ${token}`,
   };
 
-  if (Math.random() < 0.5 && videoBuffers.length > 0) {
-    const randomVideoIndex = Math.floor(Math.random() * videoBuffers.length);
-    const randomTitleIndex = Math.floor(Math.random() * videoTitles.length);
-
-    const videoFile = videoBuffers[randomVideoIndex];
-    const videoTitle = videoTitles[randomTitleIndex];
-    const randomString = generateRandomString(6);
-
-    const originalName = videoFile.filename.replace(".mp4", "");
-    const randomizedFilename = `${originalName}_${randomString}.mp4`;
-
-    const formData = {
-      video_file: http.file(videoFile.buffer, randomizedFilename, "video/mp4"),
-      title: `${videoTitle} ${randomString}`,
-    };
-
-    console.log(`Attempting to upload: ${randomizedFilename}`);
-
+  if (Math.random() < 0.5) {
     const uploadStart = Date.now();
-    const uploadResp = http.post(`${BASE_URL}/api/create_video`, formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      timeout: "60s",
-    });
+    const uploadResp = http.post(
+      `${BASE_URL}/api/create_video_2`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        timeout: "60s",
+      }
+    );
     const uploadTime = Date.now() - uploadStart;
 
     videoUploadResponseTime.add(uploadTime);
@@ -291,22 +267,6 @@ function basketballPlayerScenario(token) {
     });
 
     videoUploadSuccessRate.add(uploadSuccess);
-
-    if (uploadSuccess) {
-      videosUploaded.add(1);
-      console.log(
-        `✅ Uploaded: ${videoTitle} (${randomizedFilename}) in ${uploadTime}ms`
-      );
-    } else {
-      console.log(`❌ Upload failed: ${uploadResp.status} in ${uploadTime}ms`);
-      console.log(`   Response: ${uploadResp.body}`);
-
-      if (uploadResp.status === 400) {
-        console.log(`❌ Error: Missing video file or invalid data`);
-      } else if (uploadResp.status === 500) {
-        console.log(`❌ Error: Server error - check backend logs`);
-      }
-    }
   }
 
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
@@ -369,14 +329,16 @@ export default function () {
   if (token) {
     testAuthenticatedEndpoints(token);
 
-    const scenario = Math.random();
-    if (scenario < 0.4) {
-      voterScenario(token); // 40% de los casos
-    } else if (scenario < 0.7) {
-      basketballPlayerScenario(token); // 30% de los casos
-    } else {
-      newUserScenario(); // 30% de los casos
-    }
+    basketballPlayerScenario(token);
+
+    // const scenario = Math.random();
+    // if (scenario < 0.4) {
+    //   voterScenario(token); // 40% de los casos
+    // } else if (scenario < 0.7) {
+    //   basketballPlayerScenario(token); // 30% de los casos
+    // } else {
+    //   newUserScenario(); // 30% de los casos
+    // }
   }
 
   sleep(1);
