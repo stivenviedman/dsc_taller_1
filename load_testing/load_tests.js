@@ -381,11 +381,11 @@ export default function () {
 
     const scenario = Math.random();
     if (scenario < 0.4) {
-      voterScenario(token);
+      voterScenario(token); // 40% de los casos
     } else if (scenario < 0.7) {
-      basketballPlayerScenario(token);
+      basketballPlayerScenario(token); // 30% de los casos
     } else {
-      newUserScenario();
+      newUserScenario(); // 30% de los casos
     }
   }
 
