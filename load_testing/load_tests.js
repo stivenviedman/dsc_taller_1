@@ -64,22 +64,15 @@ const videoTitles = [
 
 // Load video files in INIT stage (global scope)
 const videoFiles = ["video1.mp4", "video2.mp4"];
-const videoBuffers = videoFiles
-  .map((filename) => {
-    try {
-      const file = open(`./videos/${filename}`, "b");
-      console.log(`Loaded: ${filename} (${file.length} bytes)`);
-      return {
-        filename: filename,
-        buffer: file,
-        size: file.length,
-      };
-    } catch (error) {
-      console.error(`Failed to load ${filename}:`, error.message);
-      return null;
-    }
-  })
-  .filter(Boolean);
+const videoBuffers = videoFiles.map((filename) => {
+  try {
+    const file = open(`./videos/${filename}`, "b");
+    return { filename, buffer: file };
+  } catch (error) {
+    console.error(`Failed to load ${filename}: ${error.message}`);
+    return null;
+  }
+}).filter(Boolean);
 
 console.log(`Successfully loaded ${videoBuffers.length} video files`);
 
