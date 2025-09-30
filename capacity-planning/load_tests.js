@@ -1,7 +1,5 @@
 // This command must be executed in the following way
 // k6 run -e BASE_URL=http://localhost:8080 -e TOTAL_STEPS=3 -e VUS_INCREMENT=5 -e STEP_DURATION=30s -e VIDEO_ASSETS_URL=http://localhost:8080 load_tests.js
-// k6 run -e BASE_URL=http://10.0.1.32:8080 -e TOTAL_STEPS=10 -e VUS_INCREMENT=1000 -e STEP_DURATION=5m -e VIDEO_ASSETS_URL=http://http://10.0.1.93 load_tests.js
-// k6 run -e BASE_URL=http://34.200.228.126:3000 -e TOTAL_STEPS=10 -e VUS_INCREMENT=1000 -e STEP_DURATION=5m -e VIDEO_ASSETS_URL=http://34.200.228.126:3000 load_tests.js
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter, Rate } from "k6/metrics";
@@ -132,8 +130,6 @@ function authenticateUser() {
     headers,
   });
   const responseTime = Date.now() - startTime;
-
-  console.log("loginResp:: ", loginResp);
 
   authResponseTime.add(responseTime);
 
@@ -329,16 +325,14 @@ export default function () {
   if (token) {
     testAuthenticatedEndpoints(token);
 
-    basketballPlayerScenario(token);
-
-    // const scenario = Math.random();
-    // if (scenario < 0.4) {
-    //   voterScenario(token); // 40% de los casos
-    // } else if (scenario < 0.7) {
-    //   basketballPlayerScenario(token); // 30% de los casos
-    // } else {
-    //   newUserScenario(); // 30% de los casos
-    // }
+    const scenario = Math.random();
+    if (scenario < 0.4) {
+      voterScenario(token); // 40% de los casos
+    } else if (scenario < 0.7) {
+      basketballPlayerScenario(token); // 30% de los casos
+    } else {
+      newUserScenario(); // 30% de los casos
+    }
   }
 
   sleep(1);

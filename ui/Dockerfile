@@ -1,4 +1,3 @@
-# ./ui/Dockerfile
 FROM node:20
 
 WORKDIR /app
@@ -7,5 +6,4 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000
-CMD ["npm", "run", "build"]
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
