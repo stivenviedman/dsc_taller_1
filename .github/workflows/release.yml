@@ -40,14 +40,35 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Create or update a single draft release called "rc"
-          gh release create "rc" \
-            --draft \
-            --prerelease \
-            --title "Release Candidate" \
-            --notes "${{ env.changelog }}" \
-            || gh release edit "rc" \
+          # ensure tag exists
+          git tag -f rc
+          git push origin rc --force
+
+          # get changelog since last published release
+          if gh release view rc >/dev/null 2>&1; then
+            existing_notes=$(gh release view rc --json body --jq '.body')
+          else
+            existing_notes=""
+          fi
+
+          if [ -z "${{ env.last_release }}" ]; then
+            new_log=$(git log --pretty=format:"- %s (%h)")
+          else
+            new_log=$(git log ${{ env.last_release }}..HEAD --pretty=format:"- %s (%h)")
+          fi
+
+          combined_notes="${existing_notes}"$'\n'"${new_log}"
+
+          if gh release view rc >/dev/null 2>&1; then
+            gh release edit rc \
               --draft \
               --prerelease \
               --title "Release Candidate" \
-              --notes "${{ env.changelog }}"
+              --notes "$combined_notes"
+          else
+            gh release create rc \
+              --draft \
+              --prerelease \
+              --title "Release Candidate" \
+              --notes "$combined_notes"
+          fi
