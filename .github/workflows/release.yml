@@ -12,29 +12,17 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Get latest tag
-        id: tag
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-          echo "latest_tag=$latest_tag" >> $GITHUB_ENV
-
-      - name: Bump version (example: patch bump)
-        id: bump
-        run: |
-          new_version=$(echo $latest_tag | awk -F. '{print $1"."$2"."$3+1}')
-          echo "new_version=$new_version" >> $GITHUB_ENV
-
-      - name: Create or update pre-release
+      - name: Create or update rolling pre-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "v${{ env.new_version }}" \
+          gh release create "pre-release" \
             --draft \
             --prerelease \
-            --title "Pre-release v${{ env.new_version }}" \
-            --notes "This is an automated pre-release for commit $GITHUB_SHA" \
-            || gh release edit "v${{ env.new_version }}" \
-               --draft \
-               --prerelease \
-               --title "Pre-release v${{ env.new_version }}" \
-               --notes "Updated pre-release for commit $GITHUB_SHA"
+            --title "Pre-release (rolling)" \
+            --notes "Latest commit: $GITHUB_SHA" \
+            || gh release edit "pre-release" \
+              --draft \
+              --prerelease \
+              --title "Pre-release (rolling)" \
+              --notes "Updated for commit $GITHUB_SHA"
