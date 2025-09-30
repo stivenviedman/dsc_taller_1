@@ -1,4 +1,4 @@
-name: Pre-release on push to main
+name: Rolling Release Candidate
 
 on:
   push:
@@ -6,26 +6,48 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: write   # needed to create/edit releases
 
 jobs:
-  create_prerelease:
+  update-release-candidate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Create or update rolling pre-release
+      - name: Fetch all tags
+        run: git fetch --tags --force
+
+      - name: Get last published release tag
+        id: last_release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "pre-release" \
+          tag=$(gh release list --limit 1 --exclude-drafts --exclude-pre-releases --json tagName --jq '.[0].tagName' || echo "")
+          echo "last_release=$tag" >> $GITHUB_ENV
+
+      - name: Generate changelog since last release
+        id: changelog
+        run: |
+          if [ -z "${{ env.last_release }}" ]; then
+            log=$(git log --pretty=format:"- %s (%h)")
+          else
+            log=$(git log ${{ env.last_release }}..HEAD --pretty=format:"- %s (%h)")
+          fi
+          echo "changelog=$log" >> $GITHUB_ENV
+
+      - name: Create or update Release Candidate
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create or update a single draft release called "rc"
+          gh release create "rc" \
             --draft \
             --prerelease \
-            --title "Pre-release (rolling)" \
-            --notes "Latest commit: $GITHUB_SHA" \
-            || gh release edit "pre-release" \
+            --title "Release Candidate" \
+            --notes "${{ env.changelog }}" \
+            || gh release edit "rc" \
               --draft \
               --prerelease \
-              --title "Pre-release (rolling)" \
-              --notes "Updated for commit $GITHUB_SHA"
+              --title "Release Candidate" \
+              --notes "${{ env.changelog }}"
