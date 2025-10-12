@@ -207,4 +207,6 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 	// Ranking routes
 	api.Get("/public/rankings", r.getRankings)
 
+	// Health check
+	api.Get("/health/check", r.HealthCheck)
 }

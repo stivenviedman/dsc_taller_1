@@ -12,10 +12,12 @@ RUN go build -o backend-worker ./cmd/worker/main.go
 
 FROM debian:bookworm-slim
 
-# Install ffmpeg + scp (openssh-client)
+# Install dependencies and CA certificates
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
     ffmpeg \
     openssh-client \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

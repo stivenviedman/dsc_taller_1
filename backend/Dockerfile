@@ -19,7 +19,10 @@ WORKDIR /app
 
 # Install ffmpeg for video processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
     ffmpeg \
+    openssh-client \
+    && update-ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy binaries

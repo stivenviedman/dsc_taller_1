@@ -30,11 +30,15 @@ services:
       DB_NAME: anb-dev
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      S3_BUCKET: anb-videos
+      AWS_REGION: us-east-1
     ports:
       - "8080:8080"
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/processed:/app/processed
+      # Expects config and credential files
+      - ~/.aws:/root/.aws:ro
 
   worker:
     build: ./backend
@@ -51,9 +55,13 @@ services:
       DB_NAME: anb-dev
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      S3_BUCKET: anb-videos
+      AWS_REGION: us-east-1
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/processed:/app/processed
+      # Expects config and credential files
+      - ~/.aws:/root/.aws:ro
 
   frontend:
     build: ./ui

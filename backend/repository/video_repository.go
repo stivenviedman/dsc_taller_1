@@ -3,16 +3,18 @@ package repository
 import (
 	"back-end-todolist/asynqtasks"
 	"back-end-todolist/models"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/config"
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
@@ -41,59 +43,70 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	ext := filepath.Ext(file.Filename)
 	name := strings.TrimSuffix(file.Filename, ext)
 	safeName := strings.ReplaceAll(name, " ", "_")
-	finalFilename := safeName + ext
+	finalFilename := fmt.Sprintf("%d_%s%s", userID, safeName, ext)
 
-	// Final file path
-	publicPath := fmt.Sprintf("/uploads/%d_%s", userID, finalFilename)
-	savePath := "." + publicPath
-
-	mode := os.Getenv("MODE")
-	fileServerHost := os.Getenv("FILE_SERVER_HOST")
-
-	//Guarda el archivo en su contenedor (contexto)
-	if err := ctx.SaveFile(file, savePath); err != nil {
+	// Create temporary local file
+	tempPath := filepath.Join(os.TempDir(), finalFilename)
+	if err := ctx.SaveFile(file, tempPath); err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error saving video",
+			"message": "Error saving video temporarily",
+		})
+	}
+	defer os.Remove(tempPath)
+
+	// --- Upload to S3 ---
+	bucketName := os.Getenv("S3_BUCKET")
+	region := os.Getenv("AWS_REGION")
+
+	// Load AWS config
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
+	)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error loading AWS config",
 		})
 	}
 
-	if mode != "LOCAL" {
-		// Store in ./uploads
-		fmt.Println("entro al else de prod")
-		// 2. Ejecutar scp para copiar a la otra EC2
-		destIP := fileServerHost // IP privada de la EC2 destino
-		destUser := "ec2-user"
-		destPath := "/home/ec2-user/uploads/"
-		keyPath := "/app/nfs-server-pairkeys.pem"
+	client := s3.NewFromConfig(cfg)
 
-		cmd := exec.Command("scp",
-			"-o", "StrictHostKeyChecking=no",
-			"-i", keyPath,
-			savePath,
-			fmt.Sprintf("%s@%s:%s", destUser, destIP, destPath))
+	// Open file for reading
+	f, err := os.Open(tempPath)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error opening temp file",
+		})
+	}
+	defer f.Close()
 
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
+	objectKey := fmt.Sprintf("uploads/%s", finalFilename)
 
-		fmt.Println("termino de hacer los comandos")
-
-		if err := cmd.Run(); err != nil {
-			fmt.Println("entro al error")
-			fmt.Println(err)
-			return err
-		}
-
+	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: &bucketName,
+		Key:    &objectKey,
+		Body:   f,
+	})
+	if err != nil {
+		wrappedErr := fmt.Errorf("error uploading to S3: %w", err)
+		fmt.Println(wrappedErr)
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error uploading to S3",
+		})
 	}
 
+	publicURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, objectKey)
+
+	// --- Store video record in DB ---
 	status := "uploaded"
 	now := time.Now()
 	video := models.Video{
 		UserID:      userID,
 		Title:       &title,
-		OriginalURL: &publicPath,
+		OriginalURL: &publicURL,
 		Status:      &status,
 		UploadedAt:  &now,
 	}
+
 	if err := r.DB.Create(&video).Error; err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error storing in DB",
@@ -105,43 +118,22 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	redisPort := os.Getenv("REDIS_PORT")
 
 	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
-	client := asynq.NewClient(
+	clientQ := asynq.NewClient(
 		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
 	)
-	defer client.Close()
+	defer clientQ.Close()
 
-	info, err := client.Enqueue(task)
+	info, err := clientQ.Enqueue(task)
 	if err != nil {
-		fmt.Println("entro al error de queue")
-		fmt.Println(err)
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error queueing task",
 		})
 	}
 
-	// Ensure CreatedAt is loaded before returning
-	var savedVideo models.Video
-	if err := r.DB.First(&savedVideo, video.ID).Error; err != nil {
-		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error fetching saved video",
-		})
-	}
-
-	if mode != "LOCAL" {
-		// Borrar el archivo temporal que se guado en /uploaded
-		// Ruta absoluta dentro del contenedor
-		filePath := filepath.Join("/app", publicPath)
-		// Intentar borrar el archivo
-		if err := os.Remove(filePath); err != nil {
-			fmt.Println("error eliminando el video")
-			fmt.Println(err)
-		}
-	}
-
 	return ctx.JSON(fiber.Map{
 		"message": "Stored video. Processing scheduled.",
 		"task_id": info.ID,
-		"video":   savedVideo,
+		"video":   video,
 	})
 }
 
