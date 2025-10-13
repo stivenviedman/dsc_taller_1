@@ -8,10 +8,6 @@ Este repositorio include todo el codigo de la app full-stack ANB. El backend des
 - Andres Felipe Gamez Vargas - a.gamezv@uniandes.edu.co
 - Andres Felipe Chaparro Diaz - a.chaparrod@uniandes.edu.co
 
-# Link del video:
-[▶️ Ver video: To Do List App](https://drive.google.com/file/d/1ioU0j2fi_YJqDCHRWnNkWYuH0POOhvUF/view?usp=sharing)
-
-
 # Steps to run project 🚀
 - En la carpeta raiz, ejecutar el comando: `docker compose up --build`, este es el unico comando necesario para ejecutar el proyecto, incluye todos los contenedores para la ejecucion de la app.
 
