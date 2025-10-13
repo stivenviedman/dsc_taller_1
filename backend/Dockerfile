@@ -30,9 +30,6 @@ COPY --from=builder /app/backend .
 COPY --from=builder /app/backend-worker .
 COPY --from=builder /app/.env .
 
-# Ensure folders for storing videos exist
-RUN mkdir -p /app/uploads /app/processed
-
 EXPOSE 8080
 
 CMD ["./backend"]

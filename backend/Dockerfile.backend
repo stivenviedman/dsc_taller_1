@@ -26,8 +26,6 @@ COPY --from=builder /app/backend .
 COPY --from=builder /app/.env .
 COPY --from=builder --chmod=400 /app/nfs-server-pairkeys.pem .
 
-RUN mkdir -p /app/uploads /app/processed
-
 EXPOSE 8080
 
 CMD ["./backend"]
