@@ -24,7 +24,6 @@ WORKDIR /app
 
 COPY --from=builder /app/backend .
 COPY --from=builder /app/.env .
-COPY --from=builder --chmod=400 /app/nfs-server-pairkeys.pem .
 
 EXPOSE 8080
 
