@@ -24,7 +24,6 @@ WORKDIR /app
 
 COPY --from=builder /app/backend-worker .
 COPY --from=builder /app/.env .
-COPY --from=builder --chmod=400 /app/nfs-server-pairkeys.pem .
 
 RUN mkdir -p /app/uploads /app/processed
 
