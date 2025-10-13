@@ -15,9 +15,6 @@ export default function VideoCard({
   const [submitting, setSubmitting] = useState(false);
   const src = v.processedUrl || v.originalUrl;
 
-  // Now videos go through Next.js proxy route
-  const videoUrl = `/api/proxy${src}`;
-
   const vote = async () => {
     if (!isAuthed || !token) return alert("Debes iniciar sesión para votar.");
     setSubmitting(true);
@@ -45,13 +42,13 @@ export default function VideoCard({
       </div>
       <div className="aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
         <video
-          src={videoUrl}
+          src={src}
           controls
           className="h-full w-full"
           preload="metadata"
           onError={(e) => {
             console.error("Video load error:", e);
-            console.error("Video URL:", videoUrl);
+            console.error("Video URL:", src);
           }}
         />
       </div>
