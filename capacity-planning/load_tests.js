@@ -7,6 +7,11 @@ import { Trend, Counter, Rate } from "k6/metrics";
 // Custom metrics
 const videoUploadSuccessRate = new Rate("video_upload_success_rate");
 
+// Worker metrics (NEW)
+const workerProcessingTime = new Trend("worker_processing_time");
+const workerSuccessRate = new Rate("worker_success_rate");
+const workerFailureRate = new Rate("worker_failure_rate");
+
 // Scenario-specific counters
 const scenarioCounter = new Counter("scenario_count");
 const usersCreated = new Counter("users_created");
@@ -92,6 +97,63 @@ function testVideoDownloads() {
         "processed video download is 200": (r) => r.status === 200,
       });
     }
+  }
+}
+
+// NEW: Función para hacer polling del estado del video
+function pollVideoStatus(videoId, token, maxAttempts = 30, intervalSeconds = 10) {
+  const authHeaders = {
+    ...headers,
+    Authorization: `Bearer ${token}`,
+  };
+
+  const startTime = Date.now();
+  
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const resp = http.get(`${BASE_URL}/api/videos/${videoId}`, {
+      headers: authHeaders,
+    });
+
+    if (resp.status === 200) {
+      const video = resp.json("data");
+      const status = video.status;
+
+      if (status === "processed") {
+        const processingTime = Date.now() - startTime;
+        workerProcessingTime.add(processingTime);
+        workerSuccessRate.add(true);
+        console.log(`✅ Video ${videoId} processed in ${processingTime}ms`);
+        return true;
+      } else if (status === "failed" || status === "error") {
+        workerFailureRate.add(true);
+        workerSuccessRate.add(false);
+        console.log(`❌ Video ${videoId} failed to process`);
+        return false;
+      }
+    }
+
+    // Esperar antes del siguiente intento
+    sleep(intervalSeconds);
+  }
+
+  // Timeout - no se procesó en el tiempo esperado
+  console.log(`⏱️ Video ${videoId} processing timeout after ${maxAttempts * intervalSeconds}s`);
+  workerFailureRate.add(true);
+  workerSuccessRate.add(false);
+  return false;
+}
+
+// NEW: Función para consultar métricas del worker
+function checkWorkerMetrics() {
+  const resp = http.get(`${BASE_URL}/api/health/worker`);
+  
+  if (resp.status === 200) {
+    const data = resp.json();
+    console.log(`📊 Worker Metrics: pending=${data.queue.pending}, active=${data.queue.active}, processed=${data.queue.processed}, failed=${data.queue.failed}, success_rate=${data.metrics.success_rate.toFixed(2)}%`);
+    return data;
+  } else {
+    console.log(`⚠️ Failed to fetch worker metrics: ${resp.status}`);
+    return null;
   }
 }
 
@@ -240,7 +302,7 @@ function basketballPlayerScenario(token) {
     Authorization: `Bearer ${token}`,
   };
 
-  if (Math.random() < 0.5) {
+  if (Math.random() < 0.3) {  // Reducir frecuencia a 30% para no saturar
     const uploadStart = Date.now();
     const uploadResp = http.post(
       `${BASE_URL}/api/create_video_2`,
@@ -263,6 +325,12 @@ function basketballPlayerScenario(token) {
     });
 
     videoUploadSuccessRate.add(uploadSuccess);
+
+    // NEW: Hacer polling del estado del video
+    if (uploadSuccess) {
+      const videoId = uploadResp.json("video.id");
+      pollVideoStatus(videoId, token, 30, 10); // 30 intentos, cada 10 segundos = 5 min max
+    }
   }
 
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
@@ -318,6 +386,11 @@ function newUserScenario() {
 }
 
 export default function () {
+  // NEW: Consultar métricas del worker cada 10 iteraciones
+  if (__ITER % 10 === 0 && __VU === 1) {
+    checkWorkerMetrics();
+  }
+
   testPublicEndpoints();
   testVideoDownloads();
 

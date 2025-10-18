@@ -4,8 +4,10 @@ import (
 	"back-end-todolist/middlewares"
 	"back-end-todolist/models"
 	"net/http"
+	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
 
@@ -188,6 +190,63 @@ func (r *Repository) LoginUser(context *fiber.Ctx) error {
 			"expires_in": time})
 }
 
+// @Summary      Obtiene métricas del worker
+// @Description  Devuelve estadísticas de la cola de Redis/Asynq para monitoreo del worker
+// @Tags         health
+// @Produce      json
+// @Success      200
+// @Router       /health/worker [get]
+func (r *Repository) getWorkerMetrics(ctx *fiber.Ctx) error {
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+
+	if redisHost == "" || redisPort == "" {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Redis configuration not found",
+		})
+	}
+
+	inspector := asynq.NewInspector(
+		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
+	)
+	defer inspector.Close()
+
+	// Obtener estadísticas de las colas
+	queueStats, err := inspector.GetQueueInfo("default")
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to get queue stats",
+		})
+	}
+
+	// Calcular tasa de éxito/fallo
+	totalProcessed := queueStats.Processed
+	totalFailed := queueStats.Failed
+
+	successRate := 0.0
+	failureRate := 0.0
+	if totalProcessed+totalFailed > 0 {
+		successRate = float64(totalProcessed) / float64(totalProcessed+totalFailed) * 100
+		failureRate = float64(totalFailed) / float64(totalProcessed+totalFailed) * 100
+	}
+
+	return ctx.JSON(fiber.Map{
+		"queue": fiber.Map{
+			"pending":   queueStats.Pending,
+			"active":    queueStats.Active,
+			"processed": queueStats.Processed,
+			"failed":    queueStats.Failed,
+			"archived":  queueStats.Archived,
+		},
+		"metrics": fiber.Map{
+			"success_rate":    successRate,
+			"failure_rate":    failureRate,
+			"total_processed": totalProcessed,
+			"total_failed":    totalFailed,
+		},
+	})
+}
+
 func (r *Repository) SetupRoutes(app *fiber.App) {
 	api := app.Group("/api")
 
@@ -209,4 +268,5 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 
 	// Health check
 	api.Get("/health/check", r.HealthCheck)
+	api.Get("/health/worker", r.getWorkerMetrics)
 }
