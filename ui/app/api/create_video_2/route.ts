@@ -5,7 +5,7 @@ import path from "path";
 const VIDEO_DIR = path.join(process.cwd(), "public", "videos");
 const VIDEO_FILES = ["video1.mp4", "video2.mp4"];
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
     const token = request.headers.get("authorization");
 
