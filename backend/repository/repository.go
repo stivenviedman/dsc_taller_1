@@ -198,6 +198,7 @@ func (r *Repository) SetupRoutes(app *fiber.App) {
 
 	// Video routes
 	api.Post("/create_video", middlewares.AutValidation, r.UploadVideo)
+	api.Post("/create_video_test", middlewares.AutValidation, r.UploadVideoFromURL)
 	api.Get("/videos", middlewares.AutValidation, r.getMyVideos)              // Mis videos del usuario
 	api.Get("/videos/:video_id", middlewares.AutValidation, r.getVideoDetail) // Detalle de video específico
 	api.Delete("/videos/:video_id", middlewares.AutValidation, r.deleteVideo) // Eliminar video

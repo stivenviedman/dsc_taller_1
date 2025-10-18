@@ -1,5 +1,5 @@
 // This command must be executed in the following way
-// k6 run -e BASE_URL=http://localhost:8080 -e TOTAL_STEPS=3 -e VUS_INCREMENT=5 -e STEP_DURATION=30s -e VIDEO_ASSETS_URL=http://localhost:8080 load_tests.js
+// k6 run -e BASE_URL=http://44.204.167.140:3000 -e TOTAL_STEPS=15 -e VUS_INCREMENT=100 -e STEP_DURATION=1m load_tests.js
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter, Rate } from "k6/metrics";
@@ -26,7 +26,6 @@ const BASE_URL = __ENV.BASE_URL || "http://127.0.0.1:8080";
 const TOTAL_STEPS = parseInt(__ENV.TOTAL_STEPS || "100", 10); // how many increments
 const VUS_INCREMENT = parseInt(__ENV.VUS_INCREMENT || "500", 10); // how many users to add each step
 const STEP_DURATION = __ENV.STEP_DURATION || "5m"; // how long each step lasts
-const VIDEO_ASSETS_URL = __ENV.VIDEO_ASSETS_URL || BASE_URL;
 
 const stages = [];
 for (let i = 1; i <= TOTAL_STEPS; i++) {
@@ -83,7 +82,7 @@ function testVideoDownloads() {
       validVideos[Math.floor(Math.random() * validVideos.length)];
 
     if (randomVideo.status === "processed" && randomVideo.processedUrl) {
-      const downloadUrl = `${VIDEO_ASSETS_URL}${randomVideo.processedUrl}`;
+      const downloadUrl = `${randomVideo.processedUrl}`;
       const start = Date.now();
       const downloadResp = http.get(downloadUrl, { timeout: "60s" });
       videoDownloadResponseTime.add(Date.now() - start);
@@ -234,6 +233,7 @@ function voterScenario(token) {
 
 function basketballPlayerScenario(token) {
   scenarioCounter.add(1, { scenario: "basketball_player" });
+  const videos = ["https://anb-videos.s3.us-east-1.amazonaws.com/uploads/1_1_asdfasdsdf.mp4", "https://anb-videos.s3.us-east-1.amazonaws.com/uploads/1_afsdf3434.mp4"]
 
   const authHeaders = {
     ...headers,
@@ -241,13 +241,23 @@ function basketballPlayerScenario(token) {
   };
 
   if (Math.random() < 0.5) {
+    // Pick a random video URL from the array
+    const videoURL = videos[Math.floor(Math.random() * videos.length)];
+    const title = `Test Video ${Math.floor(Math.random() * 10000)}`;
+
+    const body = {
+      video_url: videoURL,
+      title: title,
+    };
+
     const uploadStart = Date.now();
     const uploadResp = http.post(
-      `${BASE_URL}/api/create_video_2`,
-      {},
+      `${BASE_URL}/api/create_video_test`,
+      body,
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
         timeout: "60s",
       }
@@ -265,6 +275,7 @@ function basketballPlayerScenario(token) {
     videoUploadSuccessRate.add(uploadSuccess);
   }
 
+  // Fetch user's videos
   const myVideosResp = http.get(`${BASE_URL}/api/videos`, {
     headers: authHeaders,
   });

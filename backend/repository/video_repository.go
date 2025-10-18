@@ -5,6 +5,7 @@ import (
 	"back-end-todolist/models"
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -16,6 +17,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
@@ -132,6 +134,146 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"message": "Stored video. Processing scheduled.",
+		"task_id": info.ID,
+		"video":   video,
+	})
+}
+
+func (r *Repository) UploadVideoFromURL(ctx *fiber.Ctx) error {
+	userID := ctx.Locals("userID").(uint)
+
+	videoURL := ctx.FormValue("video_url")
+	title := ctx.FormValue("title")
+
+	if videoURL == "" {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "Missing video_url field",
+		})
+	}
+
+	// --- Download the video ---
+	resp, err := http.Get(videoURL)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return ctx.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"message": "Error downloading video from provided URL",
+		})
+	}
+	defer resp.Body.Close()
+
+	// Determine file extension
+	ext := filepath.Ext(videoURL)
+	if ext == "" {
+		ct := resp.Header.Get("Content-Type")
+		switch ct {
+		case "video/mp4":
+			ext = ".mp4"
+		case "video/webm":
+			ext = ".webm"
+		case "video/ogg":
+			ext = ".ogg"
+		default:
+			ext = ".mp4"
+		}
+	}
+
+	safeName := strings.ReplaceAll(title, " ", "_")
+
+	// ✅ Use UUID to ensure uniqueness
+	uniqueID := uuid.NewString()
+	finalFilename := fmt.Sprintf("%d_%s_%s%s", userID, safeName, uniqueID, ext)
+
+	// --- Save temporarily ---
+	tempPath := filepath.Join(os.TempDir(), finalFilename)
+	out, err := os.Create(tempPath)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error creating temporary file",
+		})
+	}
+	defer out.Close()
+	defer os.Remove(tempPath)
+
+	if _, err := io.Copy(out, resp.Body); err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error writing temporary file",
+		})
+	}
+
+	// --- Upload to S3 ---
+	bucketName := os.Getenv("S3_BUCKET")
+	region := os.Getenv("AWS_REGION")
+
+	cfg, err := config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
+	)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error loading AWS config",
+		})
+	}
+
+	client := s3.NewFromConfig(cfg)
+
+	f, err := os.Open(tempPath)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error opening temp file",
+		})
+	}
+	defer f.Close()
+
+	objectKey := fmt.Sprintf("uploads/%s", finalFilename)
+	_, err = client.PutObject(context.TODO(), &s3.PutObjectInput{
+		Bucket: &bucketName,
+		Key:    &objectKey,
+		Body:   f,
+	})
+	if err != nil {
+		wrappedErr := fmt.Errorf("error uploading to S3: %w", err)
+		fmt.Println(wrappedErr)
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error uploading to S3",
+		})
+	}
+
+	publicURL := fmt.Sprintf("https://%s.s3.%s.amazonaws.com/%s", bucketName, region, objectKey)
+
+	// --- Save video record ---
+	status := "uploaded"
+	now := time.Now()
+	video := models.Video{
+		UserID:      userID,
+		Title:       &title,
+		OriginalURL: &publicURL,
+		Status:      &status,
+		UploadedAt:  &now,
+	}
+
+	if err := r.DB.Create(&video).Error; err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error storing in DB",
+		})
+	}
+
+	// --- Enqueue background task ---
+	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
+
+	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
+	clientQ := asynq.NewClient(
+		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
+	)
+	defer clientQ.Close()
+
+	info, err := clientQ.Enqueue(task)
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error queueing task",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "Video downloaded and uploaded to S3. Processing scheduled.",
 		"task_id": info.ID,
 		"video":   video,
 	})
