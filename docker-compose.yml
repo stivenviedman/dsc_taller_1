@@ -28,10 +28,9 @@ services:
       DB_USER: postgres
       DB_PASSWORD: admin
       DB_NAME: anb-dev
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      S3_BUCKET: anb-videos
+      S3_BUCKET: anb-123
       AWS_REGION: us-east-1
+      SQS_QUEUE_URL: https://sqs.us-east-1.amazonaws.com/888393443808/anb
     ports:
       - "8080:8080"
     volumes:
@@ -45,7 +44,6 @@ services:
     container_name: my_go_worker
     command: ["./backend-worker"]
     depends_on:
-      - redis
       - postgres
     environment:
       DB_HOST: postgres
@@ -53,10 +51,9 @@ services:
       DB_USER: postgres
       DB_PASSWORD: admin
       DB_NAME: anb-dev
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      S3_BUCKET: anb-videos
+      S3_BUCKET: anb-123
       AWS_REGION: us-east-1
+      SQS_QUEUE_URL: https://sqs.us-east-1.amazonaws.com/888393443808/anb
     volumes:
       - ./backend/uploads:/app/uploads
       - ./backend/processed:/app/processed
@@ -77,12 +74,6 @@ services:
       - /app/node_modules
     depends_on:
       - backend
-
-  redis:
-    image: redis:7
-    container_name: my_redis
-    ports:
-      - "6379:6379"
 
 volumes:
   postgres_data:

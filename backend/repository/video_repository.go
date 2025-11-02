@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"back-end-todolist/asynqtasks"
 	"back-end-todolist/models"
 	"context"
 	"fmt"
@@ -14,11 +13,14 @@ import (
 	"strings"
 	"time"
 
+	"encoding/json"
+
+	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	"github.com/aws/aws-sdk-go-v2/service/sqs"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
-	"github.com/hibiken/asynq"
 	"gorm.io/gorm"
 )
 
@@ -116,26 +118,37 @@ func (r *Repository) UploadVideo(ctx *fiber.Ctx) error {
 	}
 
 	// Enqueue task
-	redisHost := os.Getenv("REDIS_HOST")
-	redisPort := os.Getenv("REDIS_PORT")
+	queueURL := os.Getenv("SQS_QUEUE_URL")
 
-	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
-	clientQ := asynq.NewClient(
-		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
+	cfg, err = config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
 	)
-	defer clientQ.Close()
-
-	info, err := clientQ.Enqueue(task)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error queueing task",
+			"message": "Error loading AWS config",
+		})
+	}
+	sqsClient := sqs.NewFromConfig(cfg)
+
+	payload := map[string]interface{}{
+		"video_id": video.ID,
+	}
+	body, _ := json.Marshal(payload)
+
+	resp, err := sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		QueueUrl:    &queueURL,
+		MessageBody: aws.String(string(body)),
+	})
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error sending message to SQS",
 		})
 	}
 
 	return ctx.JSON(fiber.Map{
 		"message": "Stored video. Processing scheduled.",
-		"task_id": info.ID,
 		"video":   video,
+		"task_id": resp.MessageId,
 	})
 }
 
@@ -256,26 +269,37 @@ func (r *Repository) UploadVideoFromURL(ctx *fiber.Ctx) error {
 	}
 
 	// --- Enqueue background task ---
-	redisHost := os.Getenv("REDIS_HOST")
-	redisPort := os.Getenv("REDIS_PORT")
+	queueURL := os.Getenv("SQS_QUEUE_URL")
 
-	task, _ := asynqtasks.NewProcessVideoTask(video.ID)
-	clientQ := asynq.NewClient(
-		asynq.RedisClientOpt{Addr: redisHost + ":" + redisPort},
+	cfg, err = config.LoadDefaultConfig(context.TODO(),
+		config.WithRegion(region),
 	)
-	defer clientQ.Close()
-
-	info, err := clientQ.Enqueue(task)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error queueing task",
+			"message": "Error loading AWS config",
+		})
+	}
+	sqsClient := sqs.NewFromConfig(cfg)
+
+	payload := map[string]interface{}{
+		"video_id": video.ID,
+	}
+	body, _ := json.Marshal(payload)
+
+	resp2, err := sqsClient.SendMessage(context.TODO(), &sqs.SendMessageInput{
+		QueueUrl:    &queueURL,
+		MessageBody: aws.String(string(body)),
+	})
+	if err != nil {
+		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error sending message to SQS",
 		})
 	}
 
 	return ctx.JSON(fiber.Map{
-		"message": "Video downloaded and uploaded to S3. Processing scheduled.",
-		"task_id": info.ID,
+		"message": "Stored video. Processing scheduled.",
 		"video":   video,
+		"task_id": resp2.MessageId,
 	})
 }
 
