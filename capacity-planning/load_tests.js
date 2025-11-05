@@ -1,5 +1,5 @@
 // This command must be executed in the following way
-// k6 run -e BASE_URL=http://internal-BackendELB-810693461.us-east-1.elb.amazonaws.com:8080 -e TOTAL_STEPS=15 -e VUS_INCREMENT=100 -e STEP_DURATION=1m load_tests.js
+// k6 run -e BASE_URL=http://internal-BackendELB-339079899.us-east-1.elb.amazonaws.com:8080 -e TOTAL_STEPS=15 -e VUS_INCREMENT=100 -e STEP_DURATION=1m load_tests.js
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter, Rate } from "k6/metrics";
@@ -234,8 +234,7 @@ function voterScenario(token) {
 function basketballPlayerScenario(token) {
   scenarioCounter.add(1, { scenario: "basketball_player" });
   const videos = [
-    "https://anb-videos.s3.us-east-1.amazonaws.com/uploads/1_1_asdfasdsdf.mp4",
-    "https://anb-videos.s3.us-east-1.amazonaws.com/uploads/1_afsdf3434.mp4"
+    "https://anb-123.s3.us-east-1.amazonaws.com/uploads/1_1_1_asdfasdsdf.mp4",
   ]
 
   const authHeaders = {
