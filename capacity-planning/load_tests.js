@@ -248,23 +248,23 @@ function basketballPlayerScenario(token) {
     // Pick a random video URL from the array
     const videoURL = videos[Math.floor(Math.random() * videos.length)];
     const title = `Test Video ${Math.floor(Math.random() * 10000)}`;
-
-    const body = {
-      video_url: videoURL,
-      title: title,
+    
+    // Create form data
+    const formData = {
+        video_url: videoURL,
+        title: title
     };
-
-    const uploadStart = Date.now();
+    
     const uploadResp = http.post(
-      `${BASE_URL}/api/create_video_test`,
-      body,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        timeout: "60s",
-      }
+        `${BASE_URL}/api/create_video_test`,
+        formData,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/x-www-form-urlencoded",  // Form content type
+            },
+            timeout: "60s",
+        }
     );
     const uploadTime = Date.now() - uploadStart;
 
@@ -333,23 +333,21 @@ function newUserScenario() {
 }
 
 export default function () {
-  // testPublicEndpoints();
-  // testVideoDownloads();
+  testPublicEndpoints();
+  testVideoDownloads();
 
   const token = authenticateUser();
   if (token) {
-    // testAuthenticatedEndpoints(token);
+    testAuthenticatedEndpoints(token);
 
-    basketballPlayerScenario(token);
-
-    // const scenario = Math.random();
-    // if (scenario < 0.4) {
-    //   voterScenario(token); // 40% de los casos
-    // } else if (scenario < 0.7) {
-    //   basketballPlayerScenario(token); // 30% de los casos
-    // } else {
-    //   newUserScenario(); // 30% de los casos
-    // }
+    const scenario = Math.random();
+    if (scenario < 0.4) {
+      voterScenario(token); // 40% de los casos
+    } else if (scenario < 0.7) {
+      basketballPlayerScenario(token); // 30% de los casos
+    } else {
+      newUserScenario(); // 30% de los casos
+    }
   }
 
   sleep(1);
