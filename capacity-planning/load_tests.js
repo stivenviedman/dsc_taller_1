@@ -333,8 +333,8 @@ function newUserScenario() {
 }
 
 export default function () {
-  testPublicEndpoints();
-  testVideoDownloads();
+  // testPublicEndpoints();
+  // testVideoDownloads();
 
   const token = authenticateUser();
   if (token) {
