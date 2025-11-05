@@ -244,7 +244,10 @@ function basketballPlayerScenario(token) {
     Authorization: `Bearer ${token}`,
   };
 
-  if (Math.random() < 0.5) {
+  console.log("inside basketballPlayerScenario");
+  
+
+  if (Math.random() < 1) {
     // Pick a random video URL from the array
     const videoURL = videos[Math.floor(Math.random() * videos.length)];
     const title = `Test Video ${Math.floor(Math.random() * 10000)}`;
@@ -340,14 +343,16 @@ export default function () {
   if (token) {
     testAuthenticatedEndpoints(token);
 
-    const scenario = Math.random();
-    if (scenario < 0.4) {
-      voterScenario(token); // 40% de los casos
-    } else if (scenario < 0.7) {
-      basketballPlayerScenario(token); // 30% de los casos
-    } else {
-      newUserScenario(); // 30% de los casos
-    }
+    basketballPlayerScenario(token); // 30% de los casos
+
+    // const scenario = Math.random();
+    // if (scenario < 0.4) {
+    //   voterScenario(token); // 40% de los casos
+    // } else if (scenario < 0.7) {
+    //   basketballPlayerScenario(token); // 30% de los casos
+    // } else {
+    //   newUserScenario(); // 30% de los casos
+    // }
   }
 
   sleep(1);
