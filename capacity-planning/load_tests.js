@@ -257,7 +257,8 @@ function basketballPlayerScenario(token) {
         video_url: videoURL,
         title: title
     };
-    
+
+    const uploadStart = Date.now(); 
     const uploadResp = http.post(
         `${BASE_URL}/api/create_video_test`,
         formData,
