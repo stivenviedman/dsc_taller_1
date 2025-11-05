@@ -225,9 +225,9 @@ function voterScenario(token) {
       if (voteResp.status === 201) {
         votesCast.add(1);
       } else if (voteResp.status === 409) {
-        console.log(`Already voted for video ${randomVideo.id} (expected)`);
+        // console.log(`Already voted for video ${randomVideo.id} (expected)`);
       } else {
-        console.log(`Vote failed with status: ${voteResp.status}`);
+        // console.log(`Vote failed with status: ${voteResp.status}`);
       }
     }
   }
@@ -243,9 +243,6 @@ function basketballPlayerScenario(token) {
     ...headers,
     Authorization: `Bearer ${token}`,
   };
-
-  console.log("inside basketballPlayerScenario");
-  
 
   if (Math.random() < 1) {
     // Pick a random video URL from the array
@@ -294,7 +291,7 @@ function basketballPlayerScenario(token) {
   });
 
   if (videosCheck && myVideosResp.json("data")) {
-    console.log(`User has ${myVideosResp.json("data").length} videos`);
+    // console.log(`User has ${myVideosResp.json("data").length} videos`);
   }
 }
 
