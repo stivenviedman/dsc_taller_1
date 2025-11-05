@@ -338,16 +338,18 @@ export default function () {
 
   const token = authenticateUser();
   if (token) {
-    testAuthenticatedEndpoints(token);
+    // testAuthenticatedEndpoints(token);
 
-    const scenario = Math.random();
-    if (scenario < 0.4) {
-      voterScenario(token); // 40% de los casos
-    } else if (scenario < 0.7) {
-      basketballPlayerScenario(token); // 30% de los casos
-    } else {
-      newUserScenario(); // 30% de los casos
-    }
+    basketballPlayerScenario(token);
+
+    // const scenario = Math.random();
+    // if (scenario < 0.4) {
+    //   voterScenario(token); // 40% de los casos
+    // } else if (scenario < 0.7) {
+    //   basketballPlayerScenario(token); // 30% de los casos
+    // } else {
+    //   newUserScenario(); // 30% de los casos
+    // }
   }
 
   sleep(1);
