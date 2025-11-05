@@ -40,10 +40,6 @@ export const options = {
       stages: stages,
     },
   },
-  // Add these to reduce memory usage
-  discardResponseBodies: true,  // Don't store response bodies in memory
-  batch: 10,  // Reduce batch size for metric aggregation
-  batchPerHost: 5,  // Limit concurrent connections per host
 };
 
 const headers = {
