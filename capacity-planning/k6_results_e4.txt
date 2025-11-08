@@ -1,0 +1,29 @@
+
+    CUSTOM
+    auth_response_time.............: avg=4650.832433 min=73     med=688      max=60008  p(90)=9822   p(95)=19813.2 
+    my_videos_response_time........: avg=3698.997642 min=2      med=238.5    max=60009  p(90)=8614.4 p(95)=15429.25
+    public_videos_response_time....: avg=7153.753407 min=2      med=917      max=60005  p(90)=17577  p(95)=60000   
+    rankings_response_time.........: avg=4852.473797 min=2      med=387      max=60004  p(90)=10699  p(95)=22709.85
+    scenario_count.................: 15008  15.438747/s
+    users_created..................: 3007   3.093304/s
+    video_download_response_time...: avg=127.532895  min=23     med=110      max=512    p(90)=176.1  p(95)=210.05  
+    video_upload_response_time.....: avg=41727.19949 min=63     med=59999    max=60014  p(90)=60001  p(95)=60001   
+    video_upload_success_rate......: 27.76% 782 out of 2817
+    vote_response_time.............: avg=3780.603433 min=2      med=369      max=60002  p(90)=9115.3 p(95)=17420.85
+    votes_cast.....................: 937    0.963893/s
+
+    HTTP
+    http_req_duration..............: avg=6.38s       min=1.61ms med=596.68ms max=1m0s   p(90)=14.54s p(95)=59.99s  
+      { expected_response:true }...: avg=1.88s       min=1.61ms med=306.8ms  max=58.58s p(90)=5.9s   p(95)=9.95s   
+    http_req_failed................: 29.58% 34043 out of 115065
+    http_reqs......................: 115065 118.367497/s
+
+    EXECUTION
+    iteration_duration.............: avg=34.69s      min=1.1s   med=24.66s   max=3m16s  p(90)=1m14s  p(95)=1m27s   
+    iterations.....................: 20976  21.578035/s
+    vus............................: 1618   min=0               max=1618
+    vus_max........................: 2000   min=2000            max=2000
+
+    NETWORK
+    data_received..................: 15 GB  16 MB/s
+    data_sent......................: 28 MB  29 kB/s

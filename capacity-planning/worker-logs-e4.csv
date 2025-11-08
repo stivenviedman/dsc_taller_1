@@ -1,0 +1,300 @@
+timestamp,message,logStreamName
+1762298727613,2025/11/04 23:25:27 Worker started. Polling SQS for messages...,ip-10-0-130-216.ec2.internal
+1762298857116,2025/11/04 23:27:37 Processing video ID: 8,ip-10-0-130-216.ec2.internal
+1762298857116,2025/11/04 23:27:37 [Video 8] Started processing at: 2025-11-04T23:27:37Z,ip-10-0-130-216.ec2.internal
+1762298926116,2025/11/04 23:28:46 [Video 8] Completed processing at: 2025-11-04T23:28:46Z (Duration: 1m8.99968479s),ip-10-0-130-216.ec2.internal
+1762299756604,2025/11/04 23:42:36 Worker started. Polling SQS for messages...,ip-10-0-141-186.ec2.internal
+1762300007185,2025/11/04 23:46:47 Worker started. Polling SQS for messages...,ip-10-0-142-182.ec2.internal
+1762300107460,2025/11/04 23:48:27 Processing video ID: 9,ip-10-0-142-182.ec2.internal
+1762300107460,2025/11/04 23:48:27 [Video 9] Started processing at: 2025-11-04T23:48:27Z,ip-10-0-142-182.ec2.internal
+1762300179776,2025/11/04 23:49:39 [Video 9] Completed processing at: 2025-11-04T23:49:39Z (Duration: 1m12.317096092s),ip-10-0-142-182.ec2.internal
+1762302037699,2025/11/05 00:20:37 Worker started. Polling SQS for messages...,ip-10-0-131-60.ec2.internal
+1762302378030,2025/11/05 00:26:18 Processing video ID: 10,ip-10-0-131-60.ec2.internal
+1762302378030,2025/11/05 00:26:18 [Video 10] Started processing at: 2025-11-05T00:26:18Z,ip-10-0-131-60.ec2.internal
+1762302456393,2025/11/05 00:27:36 [Video 10] Completed processing at: 2025-11-05T00:27:36Z (Duration: 1m18.362813974s),ip-10-0-131-60.ec2.internal
+1762306882502,2025/11/05 01:41:22 Processing video ID: 11,ip-10-0-131-60.ec2.internal
+1762306882502,2025/11/05 01:41:22 [Video 11] Started processing at: 2025-11-05T01:41:22Z,ip-10-0-131-60.ec2.internal
+1762306949886,2025/11/05 01:42:29 [Video 11] Completed processing at: 2025-11-05T01:42:29Z (Duration: 1m7.384060797s),ip-10-0-131-60.ec2.internal
+1762307492802,2025/11/05 01:51:32 Processing video ID: 12,ip-10-0-131-60.ec2.internal
+1762307492802,2025/11/05 01:51:32 [Video 12] Started processing at: 2025-11-05T01:51:32Z,ip-10-0-131-60.ec2.internal
+1762307559754,2025/11/05 01:52:39 [Video 12] Completed processing at: 2025-11-05T01:52:39Z (Duration: 1m6.951568654s),ip-10-0-131-60.ec2.internal
+1762307559823,2025/11/05 01:52:39 Processing video ID: 14,ip-10-0-131-60.ec2.internal
+1762307559823,2025/11/05 01:52:39 [Video 14] Started processing at: 2025-11-05T01:52:39Z,ip-10-0-131-60.ec2.internal
+1762307626732,2025/11/05 01:53:46 [Video 14] Completed processing at: 2025-11-05T01:53:46Z (Duration: 1m6.908993332s),ip-10-0-131-60.ec2.internal
+1762307626766,2025/11/05 01:53:46 Processing video ID: 16,ip-10-0-131-60.ec2.internal
+1762307626766,2025/11/05 01:53:46 [Video 16] Started processing at: 2025-11-05T01:53:46Z,ip-10-0-131-60.ec2.internal
+1762307693554,2025/11/05 01:54:53 [Video 16] Completed processing at: 2025-11-05T01:54:53Z (Duration: 1m6.787539968s),ip-10-0-131-60.ec2.internal
+1762307693593,2025/11/05 01:54:53 Processing video ID: 17,ip-10-0-131-60.ec2.internal
+1762307693593,2025/11/05 01:54:53 [Video 17] Started processing at: 2025-11-05T01:54:53Z,ip-10-0-131-60.ec2.internal
+1762307760457,2025/11/05 01:56:00 [Video 17] Completed processing at: 2025-11-05T01:56:00Z (Duration: 1m6.864310533s),ip-10-0-131-60.ec2.internal
+1762307760490,2025/11/05 01:56:00 Processing video ID: 18,ip-10-0-131-60.ec2.internal
+1762307760490,2025/11/05 01:56:00 [Video 18] Started processing at: 2025-11-05T01:56:00Z,ip-10-0-131-60.ec2.internal
+1762307760686,2025/11/05 01:56:00 Worker started. Polling SQS for messages...,ip-10-0-138-87.ec2.internal
+1762307760866,2025/11/05 01:56:00 Processing video ID: 15,ip-10-0-138-87.ec2.internal
+1762307760866,2025/11/05 01:56:00 [Video 15] Started processing at: 2025-11-05T01:56:00Z,ip-10-0-138-87.ec2.internal
+1762307827804,2025/11/05 01:57:07 [Video 18] Completed processing at: 2025-11-05T01:57:07Z (Duration: 1m7.313598408s),ip-10-0-131-60.ec2.internal
+1762307827834,2025/11/05 01:57:07 Processing video ID: 20,ip-10-0-131-60.ec2.internal
+1762307827834,2025/11/05 01:57:07 [Video 20] Started processing at: 2025-11-05T01:57:07Z,ip-10-0-131-60.ec2.internal
+1762307838798,2025/11/05 01:57:18 [Video 15] Completed processing at: 2025-11-05T01:57:18Z (Duration: 1m17.931772177s),ip-10-0-138-87.ec2.internal
+1762307838832,2025/11/05 01:57:18 Processing video ID: 21,ip-10-0-138-87.ec2.internal
+1762307838832,2025/11/05 01:57:18 [Video 21] Started processing at: 2025-11-05T01:57:18Z,ip-10-0-138-87.ec2.internal
+1762307894673,2025/11/05 01:58:14 [Video 20] Completed processing at: 2025-11-05T01:58:14Z (Duration: 1m6.838991573s),ip-10-0-131-60.ec2.internal
+1762307894807,2025/11/05 01:58:14 Processing video ID: 24,ip-10-0-131-60.ec2.internal
+1762307894807,2025/11/05 01:58:14 [Video 24] Started processing at: 2025-11-05T01:58:14Z,ip-10-0-131-60.ec2.internal
+1762307908032,2025/11/05 01:58:28 [Video 21] Completed processing at: 2025-11-05T01:58:28Z (Duration: 1m9.199266719s),ip-10-0-138-87.ec2.internal
+1762307908055,2025/11/05 01:58:28 Processing video ID: 26,ip-10-0-138-87.ec2.internal
+1762307908055,2025/11/05 01:58:28 [Video 26] Started processing at: 2025-11-05T01:58:28Z,ip-10-0-138-87.ec2.internal
+1762307961690,2025/11/05 01:59:21 [Video 24] Completed processing at: 2025-11-05T01:59:21Z (Duration: 1m6.883382325s),ip-10-0-131-60.ec2.internal
+1762307961731,2025/11/05 01:59:21 Processing video ID: 22,ip-10-0-131-60.ec2.internal
+1762307961732,2025/11/05 01:59:21 [Video 22] Started processing at: 2025-11-05T01:59:21Z,ip-10-0-131-60.ec2.internal
+1762307978688,2025/11/05 01:59:38 [Video 26] Completed processing at: 2025-11-05T01:59:38Z (Duration: 1m10.633040361s),ip-10-0-138-87.ec2.internal
+1762307978720,2025/11/05 01:59:38 Processing video ID: 33,ip-10-0-138-87.ec2.internal
+1762307978720,2025/11/05 01:59:38 [Video 33] Started processing at: 2025-11-05T01:59:38Z,ip-10-0-138-87.ec2.internal
+1762308028811,2025/11/05 02:00:28 [Video 22] Completed processing at: 2025-11-05T02:00:28Z (Duration: 1m7.079062676s),ip-10-0-131-60.ec2.internal
+1762308028843,2025/11/05 02:00:28 Processing video ID: 25,ip-10-0-131-60.ec2.internal
+1762308028843,2025/11/05 02:00:28 [Video 25] Started processing at: 2025-11-05T02:00:28Z,ip-10-0-131-60.ec2.internal
+1762308048121,2025/11/05 02:00:48 [Video 33] Completed processing at: 2025-11-05T02:00:48Z (Duration: 1m9.40102658s),ip-10-0-138-87.ec2.internal
+1762308048149,2025/11/05 02:00:48 Processing video ID: 46,ip-10-0-138-87.ec2.internal
+1762308048149,2025/11/05 02:00:48 [Video 46] Started processing at: 2025-11-05T02:00:48Z,ip-10-0-138-87.ec2.internal
+1762308095767,2025/11/05 02:01:35 [Video 25] Completed processing at: 2025-11-05T02:01:35Z (Duration: 1m6.92404185s),ip-10-0-131-60.ec2.internal
+1762308095797,2025/11/05 02:01:35 Processing video ID: 32,ip-10-0-131-60.ec2.internal
+1762308095797,2025/11/05 02:01:35 [Video 32] Started processing at: 2025-11-05T02:01:35Z,ip-10-0-131-60.ec2.internal
+1762308117303,2025/11/05 02:01:57 [Video 46] Completed processing at: 2025-11-05T02:01:57Z (Duration: 1m9.153350779s),ip-10-0-138-87.ec2.internal
+1762308117340,2025/11/05 02:01:57 Processing video ID: 31,ip-10-0-138-87.ec2.internal
+1762308117340,2025/11/05 02:01:57 [Video 31] Started processing at: 2025-11-05T02:01:57Z,ip-10-0-138-87.ec2.internal
+1762308124221,2025/11/05 02:02:04 Worker started. Polling SQS for messages...,ip-10-0-139-136.ec2.internal
+1762308124450,2025/11/05 02:02:04 Processing video ID: 67,ip-10-0-139-136.ec2.internal
+1762308124450,2025/11/05 02:02:04 [Video 67] Started processing at: 2025-11-05T02:02:04Z,ip-10-0-139-136.ec2.internal
+1762308162935,2025/11/05 02:02:42 [Video 32] Completed processing at: 2025-11-05T02:02:42Z (Duration: 1m7.137848439s),ip-10-0-131-60.ec2.internal
+1762308162964,2025/11/05 02:02:42 Processing video ID: 34,ip-10-0-131-60.ec2.internal
+1762308162964,2025/11/05 02:02:42 [Video 34] Started processing at: 2025-11-05T02:02:42Z,ip-10-0-131-60.ec2.internal
+1762308186393,2025/11/05 02:03:06 [Video 31] Completed processing at: 2025-11-05T02:03:06Z (Duration: 1m9.053466s),ip-10-0-138-87.ec2.internal
+1762308186426,2025/11/05 02:03:06 Processing video ID: 49,ip-10-0-138-87.ec2.internal
+1762308186427,2025/11/05 02:03:06 [Video 49] Started processing at: 2025-11-05T02:03:06Z,ip-10-0-138-87.ec2.internal
+1762308203210,2025/11/05 02:03:23 [Video 67] Completed processing at: 2025-11-05T02:03:23Z (Duration: 1m18.759033915s),ip-10-0-139-136.ec2.internal
+1762308203240,2025/11/05 02:03:23 Processing video ID: 73,ip-10-0-139-136.ec2.internal
+1762308203240,2025/11/05 02:03:23 [Video 73] Started processing at: 2025-11-05T02:03:23Z,ip-10-0-139-136.ec2.internal
+1762308230911,2025/11/05 02:03:50 [Video 34] Completed processing at: 2025-11-05T02:03:50Z (Duration: 1m7.946994907s),ip-10-0-131-60.ec2.internal
+1762308230939,2025/11/05 02:03:50 Processing video ID: 35,ip-10-0-131-60.ec2.internal
+1762308230939,2025/11/05 02:03:50 [Video 35] Started processing at: 2025-11-05T02:03:50Z,ip-10-0-131-60.ec2.internal
+1762308256657,
+,ip-10-0-138-87.ec2.internal
+1762308256657,2025/11/05 02:04:16 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308256657,"[0m[31;1m[926.346ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/49_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/7_Test_Video_5834_b7e746ba-ce12-4a51-984e-94533ab80c64.mp4',""title""='Test Video 5834',""status""='processed',""uploaded_at""='2025-11-05 01:53:52.65',""processed_at""='2025-11-05 02:04:15.731',""user_id""=7 WHERE ""id"" = 49[0m",ip-10-0-138-87.ec2.internal
+1762308256665,2025/11/05 02:04:16 [Video 49] Completed processing at: 2025-11-05T02:04:16Z (Duration: 1m10.237393414s),ip-10-0-138-87.ec2.internal
+1762308256697,2025/11/05 02:04:16 Processing video ID: 52,ip-10-0-138-87.ec2.internal
+1762308256697,2025/11/05 02:04:16 [Video 52] Started processing at: 2025-11-05T02:04:16Z,ip-10-0-138-87.ec2.internal
+1762308276764,
+,ip-10-0-139-136.ec2.internal
+1762308276764,2025/11/05 02:04:36 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308276764,"[0m[31;1m[2133.024ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/73_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/117_Test_Video_5496_36a014c0-57d9-415d-a354-8b77baa4822b.mp4',""title""='Test Video 5496',""status""='processed',""uploaded_at""='2025-11-05 01:54:02.707',""processed_at""='2025-11-05 02:04:34.63',""user_id""=117 WHERE ""id"" = 73[0m",ip-10-0-139-136.ec2.internal
+1762308276771,2025/11/05 02:04:36 [Video 73] Completed processing at: 2025-11-05T02:04:36Z (Duration: 1m13.531382175s),ip-10-0-139-136.ec2.internal
+1762308276800,2025/11/05 02:04:36 Processing video ID: 77,ip-10-0-139-136.ec2.internal
+1762308276800,2025/11/05 02:04:36 [Video 77] Started processing at: 2025-11-05T02:04:36Z,ip-10-0-139-136.ec2.internal
+1762308303058,
+,ip-10-0-131-60.ec2.internal
+1762308303058,2025/11/05 02:05:03 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308303058,"[0m[31;1m[3019.533ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/35_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/24_Test_Video_6334_df140300-474d-4301-8c4d-bc39f869c3e4.mp4',""title""='Test Video 6334',""status""='processed',""uploaded_at""='2025-11-05 01:53:47.975',""processed_at""='2025-11-05 02:05:00.038',""user_id""=24 WHERE ""id"" = 35[0m",ip-10-0-131-60.ec2.internal
+1762308303067,2025/11/05 02:05:03 [Video 35] Completed processing at: 2025-11-05T02:05:03Z (Duration: 1m12.127173041s),ip-10-0-131-60.ec2.internal
+1762308303101,2025/11/05 02:05:03 Processing video ID: 52,ip-10-0-131-60.ec2.internal
+1762308303101,2025/11/05 02:05:03 [Video 52] Started processing at: 2025-11-05T02:05:03Z,ip-10-0-131-60.ec2.internal
+1762308328965,
+,ip-10-0-138-87.ec2.internal
+1762308328965,2025/11/05 02:05:28 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308328965,"[0m[31;1m[2643.214ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/52_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/54_Test_Video_310_6da9d792-d003-4c28-b808-15e8d8e845c8.mp4',""title""='Test Video 310',""status""='processed',""uploaded_at""='2025-11-05 01:53:54.438',""processed_at""='2025-11-05 02:05:26.322',""user_id""=54 WHERE ""id"" = 52[0m",ip-10-0-138-87.ec2.internal
+1762308328973,2025/11/05 02:05:28 [Video 52] Completed processing at: 2025-11-05T02:05:28Z (Duration: 1m12.275429777s),ip-10-0-138-87.ec2.internal
+1762308328996,2025/11/05 02:05:28 Processing video ID: 54,ip-10-0-138-87.ec2.internal
+1762308328997,2025/11/05 02:05:28 [Video 54] Started processing at: 2025-11-05T02:05:28Z,ip-10-0-138-87.ec2.internal
+1762308349512,
+,ip-10-0-139-136.ec2.internal
+1762308349512,2025/11/05 02:05:49 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308349512,"[0m[31;1m[2159.822ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/77_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/29_Test_Video_7110_315f9df1-e0a7-4ef3-a05c-15cb40c07be1.mp4',""title""='Test Video 7110',""status""='processed',""uploaded_at""='2025-11-05 01:54:04.892',""processed_at""='2025-11-05 02:05:47.352',""user_id""=29 WHERE ""id"" = 77[0m",ip-10-0-139-136.ec2.internal
+1762308349520,2025/11/05 02:05:49 [Video 77] Completed processing at: 2025-11-05T02:05:49Z (Duration: 1m12.719892392s),ip-10-0-139-136.ec2.internal
+1762308349556,2025/11/05 02:05:49 Processing video ID: 79,ip-10-0-139-136.ec2.internal
+1762308349556,2025/11/05 02:05:49 [Video 79] Started processing at: 2025-11-05T02:05:49Z,ip-10-0-139-136.ec2.internal
+1762308374464,
+,ip-10-0-131-60.ec2.internal
+1762308374464,2025/11/05 02:06:14 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308374464,"[0m[31;1m[516.035ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/52_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/54_Test_Video_310_6da9d792-d003-4c28-b808-15e8d8e845c8.mp4',""title""='Test Video 310',""status""='processed',""uploaded_at""='2025-11-05 01:53:54.438',""processed_at""='2025-11-05 02:06:13.948',""user_id""=54 WHERE ""id"" = 52[0m",ip-10-0-131-60.ec2.internal
+1762308374473,2025/11/05 02:06:14 [Video 52] Completed processing at: 2025-11-05T02:06:14Z (Duration: 1m11.372017329s),ip-10-0-131-60.ec2.internal
+1762308374512,2025/11/05 02:06:14 Processing video ID: 54,ip-10-0-131-60.ec2.internal
+1762308374512,2025/11/05 02:06:14 [Video 54] Started processing at: 2025-11-05T02:06:14Z,ip-10-0-131-60.ec2.internal
+1762308400432,
+,ip-10-0-138-87.ec2.internal
+1762308400432,2025/11/05 02:06:40 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308400432,"[0m[31;1m[1078.276ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/54_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/4_Test_Video_5406_4bf7effd-d303-4d37-8d35-999df1e7815e.mp4',""title""='Test Video 5406',""status""='processed',""uploaded_at""='2025-11-05 01:53:55.079',""processed_at""='2025-11-05 02:06:39.353',""user_id""=4 WHERE ""id"" = 54[0m",ip-10-0-138-87.ec2.internal
+1762308400439,2025/11/05 02:06:40 [Video 54] Completed processing at: 2025-11-05T02:06:40Z (Duration: 1m11.442839526s),ip-10-0-138-87.ec2.internal
+1762308400475,2025/11/05 02:06:40 Processing video ID: 61,ip-10-0-138-87.ec2.internal
+1762308400475,2025/11/05 02:06:40 [Video 61] Started processing at: 2025-11-05T02:06:40Z,ip-10-0-138-87.ec2.internal
+1762308420262,
+,ip-10-0-139-136.ec2.internal
+1762308420262,2025/11/05 02:07:00 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308420262,"[0m[31;1m[342.131ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/79_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/24_Test_Video_3560_5a393614-8248-422c-a9b2-9a040b1c4fd8.mp4',""title""='Test Video 3560',""status""='processed',""uploaded_at""='2025-11-05 01:54:06.399',""processed_at""='2025-11-05 02:06:59.92',""user_id""=24 WHERE ""id"" = 79[0m",ip-10-0-139-136.ec2.internal
+1762308420270,2025/11/05 02:07:00 [Video 79] Completed processing at: 2025-11-05T02:07:00Z (Duration: 1m10.714249823s),ip-10-0-139-136.ec2.internal
+1762308420300,2025/11/05 02:07:00 Processing video ID: 81,ip-10-0-139-136.ec2.internal
+1762308420300,2025/11/05 02:07:00 [Video 81] Started processing at: 2025-11-05T02:07:00Z,ip-10-0-139-136.ec2.internal
+1762308444773,
+,ip-10-0-131-60.ec2.internal
+1762308444773,2025/11/05 02:07:24 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308444773,"[0m[31;1m[354.863ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/54_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/4_Test_Video_5406_4bf7effd-d303-4d37-8d35-999df1e7815e.mp4',""title""='Test Video 5406',""status""='processed',""uploaded_at""='2025-11-05 01:53:55.079',""processed_at""='2025-11-05 02:07:24.418',""user_id""=4 WHERE ""id"" = 54[0m",ip-10-0-131-60.ec2.internal
+1762308444781,2025/11/05 02:07:24 [Video 54] Completed processing at: 2025-11-05T02:07:24Z (Duration: 1m10.268216234s),ip-10-0-131-60.ec2.internal
+1762308444812,2025/11/05 02:07:24 Processing video ID: 61,ip-10-0-131-60.ec2.internal
+1762308444812,2025/11/05 02:07:24 [Video 61] Started processing at: 2025-11-05T02:07:24Z,ip-10-0-131-60.ec2.internal
+1762308470075,
+,ip-10-0-138-87.ec2.internal
+1762308470075,2025/11/05 02:07:50 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308470075,"[0m[31;1m[460.753ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/61_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/42_Test_Video_8015_032c3a35-2881-4c0e-aafb-5727541e1bd1.mp4',""title""='Test Video 8015',""status""='processed',""uploaded_at""='2025-11-05 01:53:57.182',""processed_at""='2025-11-05 02:07:49.614',""user_id""=42 WHERE ""id"" = 61[0m",ip-10-0-138-87.ec2.internal
+1762308470084,2025/11/05 02:07:50 [Video 61] Completed processing at: 2025-11-05T02:07:50Z (Duration: 1m9.608410648s),ip-10-0-138-87.ec2.internal
+1762308470125,2025/11/05 02:07:50 Processing video ID: 36,ip-10-0-138-87.ec2.internal
+1762308470125,2025/11/05 02:07:50 [Video 36] Started processing at: 2025-11-05T02:07:50Z,ip-10-0-138-87.ec2.internal
+1762308495678,
+,ip-10-0-139-136.ec2.internal
+1762308495678,2025/11/05 02:08:15 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308495678,"[0m[31;1m[3793.303ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/81_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/18_Test_Video_1421_be4eb3a6-c34f-43ad-8adc-616db04da5ca.mp4',""title""='Test Video 1421',""status""='processed',""uploaded_at""='2025-11-05 01:54:06.909',""processed_at""='2025-11-05 02:08:11.884',""user_id""=18 WHERE ""id"" = 81[0m",ip-10-0-139-136.ec2.internal
+1762308495686,2025/11/05 02:08:15 [Video 81] Completed processing at: 2025-11-05T02:08:15Z (Duration: 1m15.385598689s),ip-10-0-139-136.ec2.internal
+1762308495731,2025/11/05 02:08:15 Processing video ID: 30,ip-10-0-139-136.ec2.internal
+1762308495731,2025/11/05 02:08:15 [Video 30] Started processing at: 2025-11-05T02:08:15Z,ip-10-0-139-136.ec2.internal
+1762308517920,
+,ip-10-0-131-60.ec2.internal
+1762308517921,2025/11/05 02:08:37 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308517921,"[0m[31;1m[3938.231ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/61_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/42_Test_Video_8015_032c3a35-2881-4c0e-aafb-5727541e1bd1.mp4',""title""='Test Video 8015',""status""='processed',""uploaded_at""='2025-11-05 01:53:57.182',""processed_at""='2025-11-05 02:08:33.974',""user_id""=42 WHERE ""id"" = 61[0m",ip-10-0-131-60.ec2.internal
+1762308517921,2025/11/05 02:08:37 [Video 61] Completed processing at: 2025-11-05T02:08:37Z (Duration: 1m13.109058569s),ip-10-0-131-60.ec2.internal
+1762308517955,2025/11/05 02:08:37 Processing video ID: 77,ip-10-0-131-60.ec2.internal
+1762308517955,2025/11/05 02:08:37 [Video 77] Started processing at: 2025-11-05T02:08:37Z,ip-10-0-131-60.ec2.internal
+1762308542599,
+,ip-10-0-138-87.ec2.internal
+1762308542599,2025/11/05 02:09:02 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308542599,"[0m[31;1m[3350.767ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/36_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/7_Test_Video_4497_2ff7c28a-7eb6-4c85-ae6b-c80f89686d52.mp4',""title""='Test Video 4497',""status""='processed',""uploaded_at""='2025-11-05 01:53:48.409',""processed_at""='2025-11-05 02:08:59.247',""user_id""=7 WHERE ""id"" = 36[0m",ip-10-0-138-87.ec2.internal
+1762308542606,2025/11/05 02:09:02 [Video 36] Completed processing at: 2025-11-05T02:09:02Z (Duration: 1m12.480840191s),ip-10-0-138-87.ec2.internal
+1762308542634,2025/11/05 02:09:02 Processing video ID: 43,ip-10-0-138-87.ec2.internal
+1762308542634,2025/11/05 02:09:02 [Video 43] Started processing at: 2025-11-05T02:09:02Z,ip-10-0-138-87.ec2.internal
+1762308566851,
+,ip-10-0-139-136.ec2.internal
+1762308566851,2025/11/05 02:09:26 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308566851,"[0m[31;1m[221.857ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/30_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/13_Test_Video_116_c3a982c7-e47c-4d65-a2d5-6381899bb136.mp4',""title""='Test Video 116',""status""='processed',""uploaded_at""='2025-11-05 01:53:44.883',""processed_at""='2025-11-05 02:09:26.629',""user_id""=13 WHERE ""id"" = 30[0m",ip-10-0-139-136.ec2.internal
+1762308566859,2025/11/05 02:09:26 [Video 30] Completed processing at: 2025-11-05T02:09:26Z (Duration: 1m11.127875476s),ip-10-0-139-136.ec2.internal
+1762308566889,2025/11/05 02:09:26 Processing video ID: 39,ip-10-0-139-136.ec2.internal
+1762308566889,2025/11/05 02:09:26 [Video 39] Started processing at: 2025-11-05T02:09:26Z,ip-10-0-139-136.ec2.internal
+1762308588002,2025/11/05 02:09:48 [Video 77] Completed processing at: 2025-11-05T02:09:48Z (Duration: 1m10.047044354s),ip-10-0-131-60.ec2.internal
+1762308588032,2025/11/05 02:09:48 Processing video ID: 79,ip-10-0-131-60.ec2.internal
+1762308588033,2025/11/05 02:09:48 [Video 79] Started processing at: 2025-11-05T02:09:48Z,ip-10-0-131-60.ec2.internal
+1762308612561,
+,ip-10-0-138-87.ec2.internal
+1762308612561,2025/11/05 02:10:12 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308612561,"[0m[31;1m[488.458ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/43_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/29_Test_Video_8882_dffb3fc5-92b2-482a-882b-f426a99aa92b.mp4',""title""='Test Video 8882',""status""='processed',""uploaded_at""='2025-11-05 01:53:50.431',""processed_at""='2025-11-05 02:10:12.072',""user_id""=29 WHERE ""id"" = 43[0m",ip-10-0-138-87.ec2.internal
+1762308612569,2025/11/05 02:10:12 [Video 43] Completed processing at: 2025-11-05T02:10:12Z (Duration: 1m9.934954368s),ip-10-0-138-87.ec2.internal
+1762308612600,2025/11/05 02:10:12 Processing video ID: 51,ip-10-0-138-87.ec2.internal
+1762308612600,2025/11/05 02:10:12 [Video 51] Started processing at: 2025-11-05T02:10:12Z,ip-10-0-138-87.ec2.internal
+1762308642471,
+,ip-10-0-139-136.ec2.internal
+1762308642471,2025/11/05 02:10:42 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308642471,"[0m[31;1m[4559.793ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/39_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/27_Test_Video_1751_33455098-0ffd-4bf6-90d3-a0ca95874af7.mp4',""title""='Test Video 1751',""status""='processed',""uploaded_at""='2025-11-05 01:53:49.397',""processed_at""='2025-11-05 02:10:37.91',""user_id""=27 WHERE ""id"" = 39[0m",ip-10-0-139-136.ec2.internal
+1762308642478,2025/11/05 02:10:42 [Video 39] Completed processing at: 2025-11-05T02:10:42Z (Duration: 1m15.589506569s),ip-10-0-139-136.ec2.internal
+1762308642506,2025/11/05 02:10:42 Processing video ID: 42,ip-10-0-139-136.ec2.internal
+1762308642506,2025/11/05 02:10:42 [Video 42] Started processing at: 2025-11-05T02:10:42Z,ip-10-0-139-136.ec2.internal
+1762308658336,
+,ip-10-0-131-60.ec2.internal
+1762308658336,2025/11/05 02:10:58 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308658336,"[0m[31;1m[1110.476ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/79_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/24_Test_Video_3560_5a393614-8248-422c-a9b2-9a040b1c4fd8.mp4',""title""='Test Video 3560',""status""='processed',""uploaded_at""='2025-11-05 01:54:06.399',""processed_at""='2025-11-05 02:10:57.225',""user_id""=24 WHERE ""id"" = 79[0m",ip-10-0-131-60.ec2.internal
+1762308658343,2025/11/05 02:10:58 [Video 79] Completed processing at: 2025-11-05T02:10:58Z (Duration: 1m10.31134361s),ip-10-0-131-60.ec2.internal
+1762308658387,2025/11/05 02:10:58 Processing video ID: 42,ip-10-0-131-60.ec2.internal
+1762308658387,2025/11/05 02:10:58 [Video 42] Started processing at: 2025-11-05T02:10:58Z,ip-10-0-131-60.ec2.internal
+1762308682029,
+,ip-10-0-138-87.ec2.internal
+1762308682029,2025/11/05 02:11:22 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308682029,"[0m[31;1m[349.480ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/51_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/9_Test_Video_8683_def30b4f-40ee-454f-bdf5-44ced88663f7.mp4',""title""='Test Video 8683',""status""='processed',""uploaded_at""='2025-11-05 01:53:54.285',""processed_at""='2025-11-05 02:11:21.679',""user_id""=9 WHERE ""id"" = 51[0m",ip-10-0-138-87.ec2.internal
+1762308682037,2025/11/05 02:11:22 [Video 51] Completed processing at: 2025-11-05T02:11:22Z (Duration: 1m9.437086601s),ip-10-0-138-87.ec2.internal
+1762308682066,2025/11/05 02:11:22 Processing video ID: 66,ip-10-0-138-87.ec2.internal
+1762308682066,2025/11/05 02:11:22 [Video 66] Started processing at: 2025-11-05T02:11:22Z,ip-10-0-138-87.ec2.internal
+1762308715895,
+,ip-10-0-139-136.ec2.internal
+1762308715895,2025/11/05 02:11:55 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308715895,"[0m[31;1m[2678.558ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/42_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/3_Test_Video_2017_43672b9d-57ce-48dd-bb4e-c87e81e68cd3.mp4',""title""='Test Video 2017',""status""='processed',""uploaded_at""='2025-11-05 01:53:49.955',""processed_at""='2025-11-05 02:11:53.211',""user_id""=3 WHERE ""id"" = 42[0m",ip-10-0-139-136.ec2.internal
+1762308715898,2025/11/05 02:11:55 [Video 42] Completed processing at: 2025-11-05T02:11:55Z (Duration: 1m13.391539851s),ip-10-0-139-136.ec2.internal
+1762308715929,2025/11/05 02:11:55 Processing video ID: 53,ip-10-0-139-136.ec2.internal
+1762308715930,2025/11/05 02:11:55 [Video 53] Started processing at: 2025-11-05T02:11:55Z,ip-10-0-139-136.ec2.internal
+1762308731912,
+,ip-10-0-131-60.ec2.internal
+1762308731912,2025/11/05 02:12:11 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308731912,"[0m[31;1m[3933.617ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/42_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/3_Test_Video_2017_43672b9d-57ce-48dd-bb4e-c87e81e68cd3.mp4',""title""='Test Video 2017',""status""='processed',""uploaded_at""='2025-11-05 01:53:49.955',""processed_at""='2025-11-05 02:12:07.979',""user_id""=3 WHERE ""id"" = 42[0m",ip-10-0-131-60.ec2.internal
+1762308731920,2025/11/05 02:12:11 [Video 42] Completed processing at: 2025-11-05T02:12:11Z (Duration: 1m13.53345785s),ip-10-0-131-60.ec2.internal
+1762308731948,2025/11/05 02:12:11 Processing video ID: 53,ip-10-0-131-60.ec2.internal
+1762308731948,2025/11/05 02:12:11 [Video 53] Started processing at: 2025-11-05T02:12:11Z,ip-10-0-131-60.ec2.internal
+1762308752110,
+,ip-10-0-138-87.ec2.internal
+1762308752110,2025/11/05 02:12:32 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-138-87.ec2.internal
+1762308752110,"[0m[31;1m[571.559ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/66_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/14_Test_Video_429_d2b31449-6d0f-442c-97df-6e1ef0932e16.mp4',""title""='Test Video 429',""status""='processed',""uploaded_at""='2025-11-05 01:53:59.442',""processed_at""='2025-11-05 02:12:31.538',""user_id""=14 WHERE ""id"" = 66[0m",ip-10-0-138-87.ec2.internal
+1762308752118,2025/11/05 02:12:32 [Video 66] Completed processing at: 2025-11-05T02:12:32Z (Duration: 1m10.051384263s),ip-10-0-138-87.ec2.internal
+1762308752228,2025/11/05 02:12:32 Processing video ID: 68,ip-10-0-138-87.ec2.internal
+1762308752228,2025/11/05 02:12:32 [Video 68] Started processing at: 2025-11-05T02:12:32Z,ip-10-0-138-87.ec2.internal
+1762308790047,
+,ip-10-0-139-136.ec2.internal
+1762308790047,2025/11/05 02:13:10 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-139-136.ec2.internal
+1762308790047,"[0m[31;1m[3135.224ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/53_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/2_Test_Video_2495_f3a7eb97-b852-482c-8330-6f23ae7b1b9e.mp4',""title""='Test Video 2495',""status""='processed',""uploaded_at""='2025-11-05 01:53:54.679',""processed_at""='2025-11-05 02:13:06.912',""user_id""=2 WHERE ""id"" = 53[0m",ip-10-0-139-136.ec2.internal
+1762308790055,2025/11/05 02:13:10 [Video 53] Completed processing at: 2025-11-05T02:13:10Z (Duration: 1m14.125530658s),ip-10-0-139-136.ec2.internal
+1762308790088,2025/11/05 02:13:10 Processing video ID: 56,ip-10-0-139-136.ec2.internal
+1762308790088,2025/11/05 02:13:10 [Video 56] Started processing at: 2025-11-05T02:13:10Z,ip-10-0-139-136.ec2.internal
+1762308804043,
+,ip-10-0-131-60.ec2.internal
+1762308804043,2025/11/05 02:13:24 [32m/app/cmd/worker/main.go:159 [33mSLOW SQL >= 200ms,ip-10-0-131-60.ec2.internal
+1762308804043,"[0m[31;1m[2868.020ms] [33m[rows:1][35m UPDATE ""videos"" SET ""processed_url""='https://anb-123.s3.us-east-1.amazonaws.com/processed/53_processed.mp4',""original_url""='https://anb-123.s3.us-east-1.amazonaws.com/uploads/2_Test_Video_2495_f3a7eb97-b852-482c-8330-6f23ae7b1b9e.mp4',""title""='Test Video 2495',""status""='processed',""uploaded_at""='2025-11-05 01:53:54.679',""processed_at""='2025-11-05 02:13:21.174',""user_id""=2 WHERE ""id"" = 53[0m",ip-10-0-131-60.ec2.internal
+1762308804050,2025/11/05 02:13:24 [Video 53] Completed processing at: 2025-11-05T02:13:24Z (Duration: 1m12.101856498s),ip-10-0-131-60.ec2.internal
+1762308804078,2025/11/05 02:13:24 Processing video ID: 56,ip-10-0-131-60.ec2.internal
+1762308804078,2025/11/05 02:13:24 [Video 56] Started processing at: 2025-11-05T02:13:24Z,ip-10-0-131-60.ec2.internal
+1762308821243,2025/11/05 02:13:41 [Video 68] Completed processing at: 2025-11-05T02:13:41Z (Duration: 1m9.015003768s),ip-10-0-138-87.ec2.internal
+1762308821283,2025/11/05 02:13:41 Processing video ID: 13,ip-10-0-138-87.ec2.internal
+1762308821283,2025/11/05 02:13:41 [Video 13] Started processing at: 2025-11-05T02:13:41Z,ip-10-0-138-87.ec2.internal
+1762308860740,2025/11/05 02:14:20 [Video 56] Completed processing at: 2025-11-05T02:14:20Z (Duration: 1m10.652223617s),ip-10-0-139-136.ec2.internal
+1762308860778,2025/11/05 02:14:20 Processing video ID: 13,ip-10-0-139-136.ec2.internal
+1762308860779,2025/11/05 02:14:20 [Video 13] Started processing at: 2025-11-05T02:14:20Z,ip-10-0-139-136.ec2.internal
+1762308873935,2025/11/05 02:14:33 [Video 56] Completed processing at: 2025-11-05T02:14:33Z (Duration: 1m9.857373018s),ip-10-0-131-60.ec2.internal
+1762308873970,2025/11/05 02:14:33 Processing video ID: 59,ip-10-0-131-60.ec2.internal
+1762308873970,2025/11/05 02:14:33 [Video 59] Started processing at: 2025-11-05T02:14:33Z,ip-10-0-131-60.ec2.internal
+1762308890808,2025/11/05 02:14:50 [Video 13] Completed processing at: 2025-11-05T02:14:50Z (Duration: 1m9.524994285s),ip-10-0-138-87.ec2.internal
+1762308890837,2025/11/05 02:14:50 Processing video ID: 27,ip-10-0-138-87.ec2.internal
+1762308890837,2025/11/05 02:14:50 [Video 27] Started processing at: 2025-11-05T02:14:50Z,ip-10-0-138-87.ec2.internal
+1762308931208,2025/11/05 02:15:31 [Video 13] Completed processing at: 2025-11-05T02:15:31Z (Duration: 1m10.428941123s),ip-10-0-139-136.ec2.internal
+1762308931239,2025/11/05 02:15:31 Processing video ID: 27,ip-10-0-139-136.ec2.internal
+1762308931239,2025/11/05 02:15:31 [Video 27] Started processing at: 2025-11-05T02:15:31Z,ip-10-0-139-136.ec2.internal
+1762308943609,2025/11/05 02:15:43 [Video 59] Completed processing at: 2025-11-05T02:15:43Z (Duration: 1m9.639271841s),ip-10-0-131-60.ec2.internal
+1762308943640,2025/11/05 02:15:43 Processing video ID: 60,ip-10-0-131-60.ec2.internal
+1762308943640,2025/11/05 02:15:43 [Video 60] Started processing at: 2025-11-05T02:15:43Z,ip-10-0-131-60.ec2.internal
+1762308961155,2025/11/05 02:16:01 [Video 27] Completed processing at: 2025-11-05T02:16:01Z (Duration: 1m10.31812888s),ip-10-0-138-87.ec2.internal
+1762308961186,2025/11/05 02:16:01 Processing video ID: 28,ip-10-0-138-87.ec2.internal
+1762308961186,2025/11/05 02:16:01 [Video 28] Started processing at: 2025-11-05T02:16:01Z,ip-10-0-138-87.ec2.internal
+1762309001602,2025/11/05 02:16:41 [Video 27] Completed processing at: 2025-11-05T02:16:41Z (Duration: 1m10.362825784s),ip-10-0-139-136.ec2.internal
+1762309001631,2025/11/05 02:16:41 Processing video ID: 28,ip-10-0-139-136.ec2.internal
+1762309001631,2025/11/05 02:16:41 [Video 28] Started processing at: 2025-11-05T02:16:41Z,ip-10-0-139-136.ec2.internal
+1762309013547,2025/11/05 02:16:53 [Video 60] Completed processing at: 2025-11-05T02:16:53Z (Duration: 1m9.906691177s),ip-10-0-131-60.ec2.internal
+1762309013588,2025/11/05 02:16:53 Processing video ID: 62,ip-10-0-131-60.ec2.internal
+1762309013588,2025/11/05 02:16:53 [Video 62] Started processing at: 2025-11-05T02:16:53Z,ip-10-0-131-60.ec2.internal
+1762309031069,2025/11/05 02:17:11 [Video 28] Completed processing at: 2025-11-05T02:17:11Z (Duration: 1m9.882914446s),ip-10-0-138-87.ec2.internal
+1762309031103,2025/11/05 02:17:11 Processing video ID: 40,ip-10-0-138-87.ec2.internal
+1762309031103,2025/11/05 02:17:11 [Video 40] Started processing at: 2025-11-05T02:17:11Z,ip-10-0-138-87.ec2.internal
+1762309071926,2025/11/05 02:17:51 [Video 28] Completed processing at: 2025-11-05T02:17:51Z (Duration: 1m10.294987287s),ip-10-0-139-136.ec2.internal
+1762309071954,2025/11/05 02:17:51 Processing video ID: 40,ip-10-0-139-136.ec2.internal
+1762309071954,2025/11/05 02:17:51 [Video 40] Started processing at: 2025-11-05T02:17:51Z,ip-10-0-139-136.ec2.internal
+1762309082506,2025/11/05 02:18:02 [Video 62] Completed processing at: 2025-11-05T02:18:02Z (Duration: 1m8.917898927s),ip-10-0-131-60.ec2.internal
+1762309082546,2025/11/05 02:18:02 Processing video ID: 65,ip-10-0-131-60.ec2.internal
+1762309082546,2025/11/05 02:18:02 [Video 65] Started processing at: 2025-11-05T02:18:02Z,ip-10-0-131-60.ec2.internal
+1762309100449,2025/11/05 02:18:20 [Video 40] Completed processing at: 2025-11-05T02:18:20Z (Duration: 1m9.345739231s),ip-10-0-138-87.ec2.internal
+1762309100485,2025/11/05 02:18:20 Processing video ID: 45,ip-10-0-138-87.ec2.internal
+1762309100485,2025/11/05 02:18:20 [Video 45] Started processing at: 2025-11-05T02:18:20Z,ip-10-0-138-87.ec2.internal
+1762309142631,2025/11/05 02:19:02 [Video 40] Completed processing at: 2025-11-05T02:19:02Z (Duration: 1m10.677131253s),ip-10-0-139-136.ec2.internal
+1762309142665,2025/11/05 02:19:02 Processing video ID: 45,ip-10-0-139-136.ec2.internal
+1762309142665,2025/11/05 02:19:02 [Video 45] Started processing at: 2025-11-05T02:19:02Z,ip-10-0-139-136.ec2.internal
+1762309151780,2025/11/05 02:19:11 [Video 65] Completed processing at: 2025-11-05T02:19:11Z (Duration: 1m9.233441619s),ip-10-0-131-60.ec2.internal
+1762309151813,2025/11/05 02:19:11 Processing video ID: 70,ip-10-0-131-60.ec2.internal
+1762309151813,2025/11/05 02:19:11 [Video 70] Started processing at: 2025-11-05T02:19:11Z,ip-10-0-131-60.ec2.internal
+1762309170669,2025/11/05 02:19:30 [Video 45] Completed processing at: 2025-11-05T02:19:30Z (Duration: 1m10.184787125s),ip-10-0-138-87.ec2.internal
+1762309170711,2025/11/05 02:19:30 Processing video ID: 63,ip-10-0-138-87.ec2.internal
+1762309170712,2025/11/05 02:19:30 [Video 63] Started processing at: 2025-11-05T02:19:30Z,ip-10-0-138-87.ec2.internal
+1762309212979,2025/11/05 02:20:12 [Video 45] Completed processing at: 2025-11-05T02:20:12Z (Duration: 1m10.313491975s),ip-10-0-139-136.ec2.internal
+1762309213021,2025/11/05 02:20:13 Processing video ID: 74,ip-10-0-139-136.ec2.internal
+1762309213021,2025/11/05 02:20:13 [Video 74] Started processing at: 2025-11-05T02:20:13Z,ip-10-0-139-136.ec2.internal
+1762309220932,2025/11/05 02:20:20 [Video 70] Completed processing at: 2025-11-05T02:20:20Z (Duration: 1m9.118674027s),ip-10-0-131-60.ec2.internal
+1762309220965,2025/11/05 02:20:20 Processing video ID: 78,ip-10-0-131-60.ec2.internal
+1762309220965,2025/11/05 02:20:20 [Video 78] Started processing at: 2025-11-05T02:20:20Z,ip-10-0-131-60.ec2.internal
+1762309240191,2025/11/05 02:20:40 [Video 63] Completed processing at: 2025-11-05T02:20:40Z (Duration: 1m9.478644982s),ip-10-0-138-87.ec2.internal
+1762309240222,2025/11/05 02:20:40 Processing video ID: 64,ip-10-0-138-87.ec2.internal
+1762309240223,2025/11/05 02:20:40 [Video 64] Started processing at: 2025-11-05T02:20:40Z,ip-10-0-138-87.ec2.internal
