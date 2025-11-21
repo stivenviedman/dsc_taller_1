@@ -1,5 +1,15 @@
-// This command must be executed in the following way
-// k6 run -e BASE_URL=http://internal-BackendELB-339079899.us-east-1.elb.amazonaws.com:8080 -e TOTAL_STEPS=20 -e VUS_INCREMENT=100 -e STEP_DURATION=1m load_tests.js
+/**
+ * Instructions
+ * 1. Install k6 in a machine with access to the private subnet
+ * 2. Run k6 in this way
+ * 2.1. Example: k6 run -e BASE_URL=http://internal-BackendELB-339079899.us-east-1.elb.amazonaws.com:8080 -e TOTAL_STEPS=20 -e VUS_INCREMENT=100 -e STEP_DURATION=1m load_tests.js
+ * 2.2. Adjust BASE_URL (URL of the backend or ALB), TOTAL_STEPS, VUS_INCREMENT, STEP_DURATION
+ * 2.3. It will start VUS_INCREMENT number of then VUS_INCREMENT * 2, then VUS_INCREMENT * 3, until reaching VUS_INCREMENT * TOTAL_STEPS
+ * 2.4. For three instances in the backend, the app has been able to serve around 1600 concurrent users, keep this in mind for setting the values in 2.3
+ * 3. Analyze the performance of the backend with the table of results of k6
+ * 4. Analyze the performance of the worker with the logs in CloudWatch (there will be a logging group for the worker)
+ */
+
 import http from "k6/http";
 import { check, sleep } from "k6";
 import { Trend, Counter, Rate } from "k6/metrics";
