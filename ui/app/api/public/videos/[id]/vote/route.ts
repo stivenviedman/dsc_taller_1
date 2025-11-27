@@ -4,7 +4,7 @@ const BASE = process.env.API_BASE_URL || "http://127.0.0.1:8080";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: any
 ) {
   try {
     const token = request.headers.get("authorization");
@@ -16,7 +16,8 @@ export async function POST(
       );
     }
 
-    const { id } = await params;
+    // Next.js guarantees that params exist in RouteParams
+    const id = context.params.id as string;
 
     const response = await fetch(`${BASE}/api/public/videos/${id}/vote`, {
       method: "POST",

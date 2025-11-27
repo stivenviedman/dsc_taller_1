@@ -4,7 +4,7 @@ const BASE = process.env.API_BASE_URL || "http://127.0.0.1:8080";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const token = request.headers.get("authorization");
